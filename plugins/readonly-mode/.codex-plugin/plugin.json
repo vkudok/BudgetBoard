@@ -1,0 +1,31 @@
+{
+  "name": "readonly-mode",
+  "version": "0.1.0",
+  "description": "Adds explicit readOnly and editMode workflow commands for Codex sessions.",
+  "author": {
+    "name": "Vladislav Golodok"
+  },
+  "license": "MIT",
+  "keywords": [
+    "readonly",
+    "workflow",
+    "safety"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Read Only Mode",
+    "shortDescription": "Use readOnly to prevent edits until confirmed.",
+    "longDescription": "Provides a Codex skill that treats readOnly as an instruction to inspect, analyze, and propose changes without editing files, installing packages, or changing project state until the user explicitly approves.",
+    "developerName": "Vladislav Golodok",
+    "category": "Productivity",
+    "capabilities": [
+      "Workflow",
+      "Safety"
+    ],
+    "defaultPrompt": [
+      "readOnly",
+      "editMode"
+    ],
+    "brandColor": "#2563EB"
+  }
+}
