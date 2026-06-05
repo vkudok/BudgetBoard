@@ -1,7 +1,10 @@
+<script setup lang="ts">
+import TransactionDialog from "~/components/app/TransactionDialog.vue";
+import PageNumber from "~/components/app/PageNumber.vue";
+</script>
 <template>
-  <section>
-    <h1 class="text-2xl font-semibold text-align-center">
-      Dashboard
-    </h1>
-  </section>
+  <div class="flex justify-between">
+    <PageNumber :number="1" name="Dashboard"/>
+    <TransactionDialog/>
+  </div>
 </template>

@@ -8,6 +8,11 @@ export default defineNuxtConfig({
     ],
     css: ['~/assets/css/main.css'],
     devtools: {enabled: true},
+    runtimeConfig: {
+        public: {
+            apiUrl: 'http://127.0.0.1:8000'
+        }
+    },
     vite: {
         plugins: [
             tailwindcss()

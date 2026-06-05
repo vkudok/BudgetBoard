@@ -1,7 +1,8 @@
+<script setup lang="ts">
+import PageNumber from "~/components/app/PageNumber.vue";
+</script>
 <template>
   <section>
-    <h1 class="text-2xl font-semibold">
-      Categories
-    </h1>
+    <PageNumber :number="5" name="Categories"/>
   </section>
 </template>

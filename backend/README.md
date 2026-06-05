@@ -22,6 +22,10 @@ python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 Returns all saved transactions from `data/transactions.json`.
 
+### GET /transactions/categories
+
+Returns the default transaction categories in English from `data/categories.json`.
+
 ### POST /transactions
 
 ```json
@@ -34,4 +38,4 @@ Returns all saved transactions from `data/transactions.json`.
 }
 ```
 
-Transactions are stored in `data/transactions.json`.
+Data is stored as JSON files in `data/`.
