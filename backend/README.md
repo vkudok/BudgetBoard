@@ -7,16 +7,20 @@ Small FastAPI backend for the Personal Finance Tracker.
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ## Run
 
 ```bash
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 ## Endpoints
+
+### GET /transactions
+
+Returns all saved transactions from `data/transactions.json`.
 
 ### POST /transactions
 
@@ -30,3 +34,4 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 }
 ```
 
+Transactions are stored in `data/transactions.json`.

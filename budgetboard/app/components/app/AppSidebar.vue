@@ -12,7 +12,7 @@ const isActiveLink = (to: string) => route.path === to
       <UHeader title="Budget Board" />
     </template>
 
-    <nav class="flex flex-col gap-1">
+    <nav class="flex flex-col gap-1 justify-items-start">
       <UButton
         v-for="link in sidebarLinks"
         :key="link.to"
