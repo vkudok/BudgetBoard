@@ -19,6 +19,7 @@ Codex should:
 - Mention alternatives when they are useful for understanding.
 - Avoid assuming that the user already knows framework-specific details.
 - Use clear examples when they make the answer easier to understand.
+- When explaining Vue concepts, describe them through analogies with Angular so the user can map Vue technology to familiar Angular patterns.
 
 If the answer involves an API endpoint, Codex should explain:
 

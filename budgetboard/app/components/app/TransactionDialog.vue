@@ -20,7 +20,7 @@
         <UFormField label="Type" name="type" class="min-h-23">
           <div class="flex w-full gap-1">
             <UButton
-                icon="i-lucide-arrow-up"
+                icon="i-lucide-arrow-down"
                 class="h-12 flex-1 justify-center"
                 color="primary"
                 :variant="state.type === 'income' ? 'solid' : 'subtle'"
@@ -30,7 +30,7 @@
             </UButton>
 
             <UButton
-                icon="i-lucide-arrow-down"
+                icon="i-lucide-arrow-up"
                 class="h-12 flex-1 justify-center"
                 color="error"
                 :variant="state.type === 'expense' ? 'solid' : 'subtle'"
@@ -56,11 +56,14 @@
           </UInput>
         </UFormField>
 
-        <UFormField label="Category" name="category"
-                    class="min-h-23">
-          <USelect class="w-full" v-model="state.category"
-                   :ui="{ base: 'h-12 text-base' }"/>
-        </UFormField>
+        <div v-if="state.type === 'expense'">
+          <UFormField label="Category" name="category"
+                      class="min-h-23">
+            <USelect class="w-full" v-model="state.category"
+                     :items="categories"
+                     :ui="{ base: 'h-12 text-base' }"/>
+          </UFormField>
+        </div>
 
         <UFormField label="Date" name="date" class="min-h-23">
           <UInput
@@ -97,37 +100,48 @@
 
 <script setup lang="ts">
 import type {FormError, FormSubmitEvent} from '@nuxt/ui'
-import PageNumber from "~/components/app/PageNumber.vue";
+import PageNumber from "~/components/app/PageNumber.vue"
+import {
+  type Transaction,
+  type TransactionType,
+  useTransactionService
+} from "~/features/transactions/services/transaction.service"
 
-const state = reactive({
-  type: null,
-  amount: null,
-  category: null,
-  comment: null,
-  date: null,
+const state = reactive<Transaction>({
+  type: 'income',
+  amount: 0,
+  category: '',
+  comment: '',
+  date: '',
 })
 const isOpen = ref(false)
 const toast = useToast()
+const transactionService = useTransactionService()
+const categories = ref<string[]>([])
 
-type Schema = typeof state
+watch(isOpen, async (value) => {
+  if (!value) {
+    return
+  }
 
-function validate(state: Partial<Schema>): FormError[] {
+  categories.value = await transactionService.getTransactionsCategories()
+})
+
+function validate(state: Partial<Transaction>): FormError[] {
   const errors = []
-
-  if (!state.type) errors.push({ name: 'type', message: 'Required' })
-  if (!state.amount) errors.push({ name: 'amount', message: 'Required' })
-  // if (!state.category) errors.push({ name: 'category', message: 'Required' })
-  if (!state.date) errors.push({ name: 'date', message: 'Required' })
-
+  if (!state.type) errors.push({name: 'type', message: 'Required'})
+  if (!state.amount) errors.push({name: 'amount', message: 'Required'})
+  if (state.type === 'expense' && !state.category) errors.push({name: 'category', message: 'Required'})
+  if (!state.date) errors.push({name: 'date', message: 'Required'})
   return errors
 }
 
 function resetForm() {
-  state.type = null
-  state.amount = null
-  state.category = null
-  state.comment = null
-  state.date = null
+  state.type = 'income'
+  state.amount = 0
+  state.category = ''
+  state.comment = ''
+  state.date = ''
 }
 
 function closeModal() {
@@ -135,18 +149,15 @@ function closeModal() {
   isOpen.value = false
 }
 
-function toggleType(type: 'income' | 'expense') {
-  if (state.type === type) {
-    state.type = null
-    return
-  }
-
+function toggleType(type: TransactionType) {
   state.type = type
 }
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<Transaction>) {
   toast.add({title: 'Success', description: 'The form has been submitted.', color: 'success'})
   console.log(event.data)
+
+  await transactionService.postTransactions(event.data)
   closeModal()
 }
 </script>
