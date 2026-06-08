@@ -61,3 +61,9 @@ If the user seems to be learning a new part of the project, Codex should slow do
 The user communicates in Russian, so Codex should answer in Russian by default unless the user asks otherwise.
 
 Code, API paths, commands, filenames, and framework terms may stay in English.
+
+## Review guidelines
+
+- Write all code review comments and summaries in Russian.
+- Use Russian for finding titles, explanations, and suggested fixes.
+- Keep code identifiers, file names, commands, and error messages in their original language.
