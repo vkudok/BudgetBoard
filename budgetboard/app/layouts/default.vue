@@ -11,7 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import AppBurgerButton from "~/components/app/AppBurgerButton.vue";
+import AppBurgerButton from '../components/app/AppBurgerButton.vue';
+import AppSidebar from '../components/app/AppSidebar.vue';
 
 const isOpen = ref(false)
 </script>

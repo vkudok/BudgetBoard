@@ -1,9 +1,9 @@
 <template>
   <section>
-    <PageNumber :number="4" name="Analytics"/>
+    <PageInfoHeader :number="4" name="Analytics"/>
   </section>
 </template>
 
 <script setup lang="ts">
-import PageNumber from "~/components/app/PageNumber.vue";
+import PageInfoHeader from '../components/app/PageInfoHeader.vue';
 </script>

@@ -10,7 +10,7 @@
     <template #content>
       <UForm class="flex flex-col w-full gap-1 p-7" :validate="validate" :state="state" @submit="onSubmit">
         <div class="flex items-center justify-between pb-7">
-          <PageNumber :number="3" name="Add transaction"/>
+          <PageInfoHeader :number="3" name="Add transaction"/>
           <UButton
               icon="i-lucide-x"
               color="neutral"
@@ -100,12 +100,12 @@
 
 <script setup lang="ts">
 import type {FormError, FormSubmitEvent} from '@nuxt/ui'
-import PageNumber from "~/components/app/PageNumber.vue"
+import PageInfoHeader from './PageInfoHeader.vue'
 import {
   type Transaction,
   type TransactionType,
   useTransactionService
-} from "~/features/transactions/services/transaction.service"
+} from '../../features/transactions/services/transaction.service'
 
 const state = reactive<Transaction>({
   type: 'income',
@@ -151,14 +151,27 @@ function closeModal() {
 
 function toggleType(type: TransactionType) {
   state.type = type
+
+  if(state.type === 'income') {
+    state.category = ''
+  }
 }
 
 async function onSubmit(event: FormSubmitEvent<Transaction>) {
-  toast.add({title: 'Success', description: 'The form has been submitted.', color: 'success'})
-  console.log(event.data)
 
-  await transactionService.postTransactions(event.data)
-  closeModal()
+  try {
+    await transactionService.postTransactions(event.data)
+    closeModal()
+    toast.add({title: 'Success', description: 'Saved successfully.', color: 'success'})
+  }
+  catch (error) {
+    console.error(error)
+    toast.add({
+      title: 'Error',
+      description: 'An error occurred while saving.',
+      color: 'error',
+    })
+  }
 }
 </script>
 

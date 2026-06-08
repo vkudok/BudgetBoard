@@ -4,7 +4,7 @@
       <UHeader title="Budget Board" />
     </template>
 
-    <nav class="flex flex-col gap-1 justify-items-start">
+    <nav class="flex flex-col gap-1">
       <UButton
         v-for="link in sidebarLinks"
         :key="link.to"
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { sidebarLinks } from '~/constants/navigation'
+import { sidebarLinks } from '../../constants/navigation'
 
 const route = useRoute()
 
