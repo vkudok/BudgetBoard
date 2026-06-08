@@ -12,8 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import AppBurgerButton from '../components/app/AppBurgerButton.vue';
+//TODO вернуть бургер
+// import AppBurgerButton from '../components/app/AppBurgerButton.vue';
 import AppSidebar from '../components/app/AppSidebar.vue';
 
-const isOpen = ref(false)
+// const isOpen = ref(false)
 </script>
