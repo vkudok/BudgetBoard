@@ -1,15 +1,22 @@
 from datetime import date, datetime, timezone
 from uuid import uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class TransactionCreate(BaseModel):
     type: str = Field(min_length=1)
     amount: float = Field(gt=0)
-    category: str = Field(min_length=1)
+    category: str | None = Field(default=None, min_length=1)
     date: date
     comment: str | None = None
+
+    @model_validator(mode="after")
+    def validate_category(self) -> "TransactionCreate":
+        if self.type == "expense" and not self.category:
+            raise ValueError("Category is required for expense transactions")
+
+        return self
 
 
 class Transaction(TransactionCreate):
@@ -27,4 +34,3 @@ def create_transaction(payload: TransactionCreate) -> Transaction:
         updatedAt=now,
         **payload.model_dump(),
     )
-

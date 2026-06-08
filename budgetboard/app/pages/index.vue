@@ -1,7 +1,11 @@
 <template>
-  <section>
-    <h1 class="text-2xl font-semibold">
-      Dashboard
-    </h1>
-  </section>
+  <div class="flex justify-between">
+    <PageInfoHeader :number="1" name="Dashboard"/>
+    <TransactionDialog/>
+  </div>
 </template>
+
+<script setup lang="ts">
+import TransactionDialog from '../components/app/TransactionDialog.vue';
+import PageInfoHeader from '../components/app/PageInfoHeader.vue';
+</script>

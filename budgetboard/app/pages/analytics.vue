@@ -1,7 +1,9 @@
 <template>
   <section>
-    <h1 class="text-2xl font-semibold">
-      Analytics
-    </h1>
+    <PageInfoHeader :number="4" name="Analytics"/>
   </section>
 </template>
+
+<script setup lang="ts">
+import PageInfoHeader from '../components/app/PageInfoHeader.vue';
+</script>

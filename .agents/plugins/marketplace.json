@@ -1,0 +1,20 @@
+{
+  "name": "budgetboard-local",
+  "interface": {
+    "displayName": "BudgetBoard Local"
+  },
+  "plugins": [
+    {
+      "name": "readonly-mode",
+      "source": {
+        "source": "local",
+        "path": "./plugins/readonly-mode"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

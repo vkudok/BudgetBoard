@@ -2,6 +2,7 @@ from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.models import Transaction, TransactionCreate, create_transaction
+from app.storage import load_categories, load_transactions, save_transaction
 
 app = FastAPI(title="BudgetBoard API")
 
@@ -13,7 +14,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-transactions: list[Transaction] = []
+
+@app.get("/transactions", response_model=list[Transaction])
+def get_transactions() -> list[Transaction]:
+    return load_transactions()
+
+
+@app.get("/transactions/categories", response_model=list[str])
+def get_transaction_categories() -> list[str]:
+    return load_categories()
 
 
 @app.post(
@@ -23,6 +32,5 @@ transactions: list[Transaction] = []
 )
 def add_transaction(payload: TransactionCreate) -> Transaction:
     transaction = create_transaction(payload)
-    transactions.append(transaction)
 
-    return transaction
+    return save_transaction(transaction)

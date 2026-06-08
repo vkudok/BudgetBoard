@@ -1,11 +1,3 @@
-<script setup lang="ts">
-import { sidebarLinks } from '~/constants/navigation'
-
-const route = useRoute()
-
-const isActiveLink = (to: string) => route.path === to
-</script>
-
 <template>
   <USidebar>
     <template #header>
@@ -34,3 +26,11 @@ const isActiveLink = (to: string) => route.path === to
     </template>
   </USidebar>
 </template>
+
+<script setup lang="ts">
+import { sidebarLinks } from '../../constants/navigation'
+
+const route = useRoute()
+
+const isActiveLink = (to: string) => route.path === to
+</script>
