@@ -1,12 +1,4 @@
-export type TransactionType = 'income' | 'expense'
-
-export interface Transaction {
-    type: TransactionType
-    amount: number
-    category?: string
-    date: string
-    comment?: string
-}
+import type {Transaction, TransactionCreate} from "~/features/transactions/models/transactions.model";
 
 export function useTransactionService() {
     const config = useRuntimeConfig()
@@ -24,13 +16,13 @@ export function useTransactionService() {
         })
     }
 
-    async function postTransactions(requestBody: Transaction) {
+    async function postTransactions(requestBody: TransactionCreate) {
         const body = {
             ...requestBody,
             category: requestBody.category || undefined,
         }
 
-        return await $fetch(`${apiUrl}/transactions`, {
+        return await $fetch<Transaction>(`${apiUrl}/transactions`, {
             method: 'POST',
             body,
         })

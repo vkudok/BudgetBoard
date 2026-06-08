@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-between">
-    <PageInfoHeader :number="1" name="Dashboard"/>
+    <PageInfoHeader name="Dashboard"/>
     <TransactionDialog/>
   </div>
 </template>

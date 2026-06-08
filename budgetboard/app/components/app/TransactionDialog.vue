@@ -10,7 +10,7 @@
     <template #content>
       <UForm class="flex flex-col w-full gap-1 p-7" :validate="validate" :state="state" @submit="onSubmit">
         <div class="flex items-center justify-between pb-7">
-          <PageInfoHeader :number="3" name="Add transaction"/>
+          <PageInfoHeader name="Add transaction"/>
           <UButton
               icon="i-lucide-x"
               color="neutral"
@@ -40,11 +40,13 @@
             </UButton>
           </div>
         </UFormField>
-        <UFormField label="Amount" name="amount"
-                    class="min-h-23">
+        <UFormField
+            label="Amount"
+            name="amount"
+            class="min-h-23">
           <UInput
-              class="w-full"
               v-model="state.amount"
+              class="w-full"
               type="number"
               placeholder="0.00"
               min="0"
@@ -57,11 +59,14 @@
         </UFormField>
 
         <div v-if="state.type === 'expense'">
-          <UFormField label="Category" name="category"
-                      class="min-h-23">
-            <USelect class="w-full" v-model="state.category"
-                     :items="categories"
-                     :ui="{ base: 'h-12 text-base' }"/>
+          <UFormField
+              label="Category" name="category"
+              class="min-h-23">
+            <USelect
+                v-model="state.category"
+                class="w-full"
+                :items="categories"
+                :ui="{ base: 'h-12 text-base' }"/>
           </UFormField>
         </div>
 
@@ -74,11 +79,12 @@
           />
         </UFormField>
 
-        <UFormField label="Comment (optional)" name="comment"
-                    class="min-h-23 pb-6">
+        <UFormField
+            label="Comment (optional)" name="comment"
+            class="min-h-23 pb-6">
           <UTextarea
-              class="w-full"
               v-model="state.comment"
+              class="w-full"
               placeholder="Write comment..."
               :ui="{ base: 'h-20 text-base' }"
           />
@@ -102,12 +108,11 @@
 import type {FormError, FormSubmitEvent} from '@nuxt/ui'
 import PageInfoHeader from './PageInfoHeader.vue'
 import {
-  type Transaction,
-  type TransactionType,
   useTransactionService
-} from '../../features/transactions/services/transaction.service'
+} from '../../features/transactions/services/transactions.service'
+import type {TransactionCreate, TransactionType} from "~/features/transactions/models/transactions.model";
 
-const state = reactive<Transaction>({
+const state = reactive<TransactionCreate>({
   type: 'income',
   amount: 0,
   category: '',
@@ -118,6 +123,9 @@ const isOpen = ref(false)
 const toast = useToast()
 const transactionService = useTransactionService()
 const categories = ref<string[]>([])
+const emit = defineEmits<{
+  created: []
+}>()
 
 watch(isOpen, async (value) => {
   if (!value) {
@@ -127,7 +135,7 @@ watch(isOpen, async (value) => {
   categories.value = await transactionService.getTransactionsCategories()
 })
 
-function validate(state: Partial<Transaction>): FormError[] {
+function validate(state: Partial<TransactionCreate>): FormError[] {
   const errors = []
   if (!state.type) errors.push({name: 'type', message: 'Required'})
   if (!state.amount) errors.push({name: 'amount', message: 'Required'})
@@ -139,7 +147,7 @@ function validate(state: Partial<Transaction>): FormError[] {
 function resetForm() {
   state.type = 'income'
   state.amount = 0
-  state.category = ''
+  state.category = '-'
   state.comment = ''
   state.date = ''
 }
@@ -151,20 +159,19 @@ function closeModal() {
 
 function toggleType(type: TransactionType) {
   state.type = type
-
-  if(state.type === 'income') {
+  if (state.type === 'income') {
     state.category = ''
   }
 }
 
-async function onSubmit(event: FormSubmitEvent<Transaction>) {
+async function onSubmit(event: FormSubmitEvent<TransactionCreate>) {
 
   try {
     await transactionService.postTransactions(event.data)
     closeModal()
     toast.add({title: 'Success', description: 'Saved successfully.', color: 'success'})
-  }
-  catch (error) {
+    emit('created')
+  } catch (error) {
     console.error(error)
     toast.add({
       title: 'Error',

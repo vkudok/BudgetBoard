@@ -1,6 +1,6 @@
 <template>
   <section>
-    <PageInfoHeader :number="5" name="Categories"/>
+    <PageInfoHeader name="Categories"/>
   </section>
 </template>
 
