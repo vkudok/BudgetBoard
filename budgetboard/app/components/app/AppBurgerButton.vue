@@ -8,15 +8,15 @@
     @click="emit('click', $event)"
   >
     <span
-      class="block h-0.5 w-[1.125rem] rounded-full bg-current transition duration-[180ms]"
+      class="block h-0.5 w-4.5 rounded-full bg-current transition duration-180"
       :class="isOpen ? 'translate-y-2 rotate-45' : ''"
     />
     <span
-      class="block h-0.5 w-[1.125rem] rounded-full bg-current transition duration-[180ms]"
+      class="block h-0.5 w-4.5 rounded-full bg-current transition duration-180"
       :class="isOpen ? 'opacity-0' : ''"
     />
     <span
-      class="block h-0.5 w-[1.125rem] rounded-full bg-current transition duration-[180ms]"
+      class="block h-0.5 w-4.5 rounded-full bg-current transition duration-180"
       :class="isOpen ? '-translate-y-2 -rotate-45' : ''"
     />
   </button>
