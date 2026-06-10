@@ -7,6 +7,13 @@ export default withNuxt({
       {
         order: ['template', 'script', 'style']
       }
+    ],
+    'vue/script-indent': [
+      'error',
+      2,
+      {
+        baseIndent: 1
+      }
     ]
   }
 })

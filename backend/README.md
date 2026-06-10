@@ -38,4 +38,11 @@ Returns the default transaction categories in English from `data/categories.json
 }
 ```
 
+### DELETE /transactions/{transaction_id}
+
+Deletes one transaction by its `id`.
+
+Returns `204 No Content` when the transaction was deleted.
+Returns `404 Not Found` when a transaction with this `id` does not exist.
+
 Data is stored as JSON files in `data/`.

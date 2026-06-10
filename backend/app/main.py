@@ -1,8 +1,13 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, HTTPException, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.models import Transaction, TransactionCreate, create_transaction
-from app.storage import load_categories, load_transactions, save_transaction
+from app.storage import (
+    delete_transaction,
+    load_categories,
+    load_transactions,
+    save_transaction,
+)
 
 app = FastAPI(title="BudgetBoard API")
 
@@ -34,3 +39,19 @@ def add_transaction(payload: TransactionCreate) -> Transaction:
     transaction = create_transaction(payload)
 
     return save_transaction(transaction)
+
+
+@app.delete(
+    "/transactions/{transaction_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def remove_transaction(transaction_id: str) -> Response:
+    was_deleted = delete_transaction(transaction_id)
+
+    if not was_deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Transaction not found",
+        )
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

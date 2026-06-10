@@ -1,5 +1,42 @@
 import {UButton, UDropdownMenu} from "#components";
-import type { Column } from '@tanstack/vue-table'
+import type {Column, Row} from '@tanstack/vue-table'
+import type {TableColumn} from "@nuxt/ui";
+
+export interface AppGridItems {
+    label: string
+    icon?: string
+    onSelect: () => void;
+}
+
+export const actionButtons = <T>(getItems: (row: Row<T>) => AppGridItems[]): TableColumn<T> => {
+    return {
+        id: 'actions',
+        meta: {
+            class: {
+                td: 'text-right'
+            }
+        },
+        cell: ({row}) => {
+            return h(
+                UDropdownMenu,
+                {
+                    content: {
+                        align: 'end'
+                    },
+                    items: getItems(row),
+                    'aria-label': 'Actions dropdown'
+                },
+                () =>
+                    h(UButton, {
+                        icon: 'i-lucide-ellipsis-vertical',
+                        color: 'neutral',
+                        variant: 'ghost',
+                        'aria-label': 'Actions dropdown'
+                    })
+            )
+        }
+    }
+}
 
 export function getGridHeader<T>(column: Column<T>, label: string) {
     const isSorted = column.getIsSorted()

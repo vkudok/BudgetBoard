@@ -28,9 +28,16 @@ export function useTransactionService() {
         })
     }
 
+    async function deleteTransaction(id: string): Promise<void> {
+        await $fetch(`${apiUrl}/transactions/${id}`, {
+            method: 'DELETE',
+        })
+    }
+
     return {
         getTransactionsCategories,
         getTransactions,
         postTransactions,
+        deleteTransaction,
     }
 }

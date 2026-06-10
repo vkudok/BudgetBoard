@@ -1,6 +1,6 @@
 import type {TableColumn} from "@nuxt/ui";
 import type { TableMeta, Row } from '@tanstack/vue-table'
-import {getGridHeader} from "~/components/features/models/appGrid.model";
+import { getGridHeader} from "~/components/features/models/appGrid.model";
 
 export interface TransactionCreate {
     type: TransactionType
@@ -18,7 +18,7 @@ export interface Transaction extends TransactionCreate {
 
 export type TransactionType = 'income' | 'expense'
 
-export const transactionColumns: TableColumn<TransactionCreate>[] = [
+export const transactionColumns: TableColumn<Transaction>[] = [
     {
         accessorKey: 'type',
         header: ({ column }) => getGridHeader(column, 'Type'),
@@ -47,7 +47,8 @@ export const transactionColumns: TableColumn<TransactionCreate>[] = [
                 th: 'text-center font-semibold',
                 td: 'text-center font-mono'
             }
-        }
+        },
+        cell: ({row}) =>  row.getValue('category') || '-'
     },
     {
         accessorKey: 'date',
@@ -57,6 +58,15 @@ export const transactionColumns: TableColumn<TransactionCreate>[] = [
                 th: 'text-center font-semibold',
                 td: 'text-center font-mono'
             }
+        },
+        cell: ({ row }) => {
+            return new Date(row.getValue('date')).toLocaleString('en-US', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            })
         }
     },
     {
@@ -71,9 +81,9 @@ export const transactionColumns: TableColumn<TransactionCreate>[] = [
     }
 ];
 
-export const transactionMeta: TableMeta<TransactionCreate> = {
+export const transactionMeta: TableMeta<Transaction> = {
     class: {
-        tr: (row: Row<TransactionCreate>) => {
+        tr: (row: Row<Transaction>) => {
             if (row.original.type === 'expense') {
                 return 'bg-error/10'
             }

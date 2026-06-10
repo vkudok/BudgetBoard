@@ -38,6 +38,20 @@ def save_transaction(transaction: Transaction) -> Transaction:
     return transaction
 
 
+def delete_transaction(transaction_id: str) -> bool:
+    transactions = load_transactions()
+    remaining_transactions = [
+        transaction for transaction in transactions if transaction.id != transaction_id
+    ]
+
+    if len(remaining_transactions) == len(transactions):
+        return False
+
+    save_transactions(remaining_transactions)
+
+    return True
+
+
 def load_categories() -> list[str]:
     if not CATEGORIES_FILE.exists():
         return []
