@@ -12,6 +12,14 @@
       :is-loading="isLoading"
       :need-global-filter="true"
     />
+    <ConfirmDialog
+      :open="isDeleteConfirmOpen"
+      :title="`Delete transaction?`"
+      :description="`Are you sure you want to delete this transaction? This action cannot be undone.`"
+      :confirm-text="`Delete`"
+      :cancel-text="`Cancel`"
+      @confirm-delete="confirmDelete($event)"
+    />
   </div>
 </template>
 
@@ -30,11 +38,14 @@
     actionButtons,
     type AppGridItems,
   } from "~/components/features/models/appGrid.model";
+  import ConfirmDialog from "~/components/app/ConfirmDialog.vue";
 
   const data = ref<Transaction[]>([]);
   const columns = [...transactionColumns, actionButtons(getRowItems)];
   const transactionService = useTransactionService();
   const isLoading = ref(false);
+  const isDeleteConfirmOpen = ref(false);
+  const deleteRow = ref<Row<Transaction> | null>(null);
 
   onMounted(async () => {
     await loadTransactions();
@@ -52,13 +63,25 @@
     }
   }
 
+  //TODO сделать релоад таблицы
+  async function confirmDelete(state: boolean) {
+    isDeleteConfirmOpen.value = false;
+    if (state && deleteRow.value) {
+      await useTransactionService().deleteTransaction(
+        deleteRow.value.original.id,
+      );
+      deleteRow.value = null;
+    }
+  }
+
   function getRowItems(row: Row<Transaction>): AppGridItems[] {
     return [
       {
         label: "Delete",
         icon: "i-lucide-trash-2",
         async onSelect() {
-          await useTransactionService().deleteTransaction(row.original.id);
+          isDeleteConfirmOpen.value = true;
+          deleteRow.value = row;
         },
       },
       {

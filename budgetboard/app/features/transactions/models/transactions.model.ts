@@ -38,6 +38,9 @@ export const transactionColumns: TableColumn<Transaction>[] = [
         td: "text-center font-mono",
       },
     },
+    cell: ({ row }) => {
+      return row.getValue("amount") + "₽";
+    },
   },
   {
     accessorKey: "category",
