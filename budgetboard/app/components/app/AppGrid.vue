@@ -1,6 +1,11 @@
 <template>
   <div v-if="needGlobalFilter" class="flex pt-4">
-    <UInput v-model="globalFilter" :ui="{ base: 'h-12 text-base' }" class="max-w-sm" placeholder="Search...">
+    <UInput
+      v-model="globalFilter"
+      :ui="{ base: 'h-12 text-base' }"
+      class="max-w-sm"
+      placeholder="Search..."
+    >
       <template #leading>
         <UIcon name="i-lucide-search" />
       </template>
@@ -20,16 +25,16 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import type {TableColumn} from '@nuxt/ui'
-import type {TableMeta} from "@tanstack/vue-table";
+  import type { TableColumn } from "@nuxt/ui";
+  import type { TableMeta } from "@tanstack/vue-table";
 
-defineProps<{
-  data: T[]
-  columns: TableColumn<T>[]
-  isLoading: boolean,
-  columnVisibility?: Record<string, boolean>,
-  meta?: TableMeta<T>
-  needGlobalFilter?: boolean
-}>()
-const globalFilter = ref('')
+  defineProps<{
+    data: T[];
+    columns: TableColumn<T>[];
+    isLoading: boolean;
+    columnVisibility?: Record<string, boolean>;
+    meta?: TableMeta<T>;
+    needGlobalFilter?: boolean;
+  }>();
+  const globalFilter = ref("");
 </script>
