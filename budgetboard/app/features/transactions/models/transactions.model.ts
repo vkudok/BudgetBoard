@@ -18,6 +18,16 @@ export interface Transaction extends TransactionCreate {
 
 export type TransactionType = "income" | "expense";
 
+const formatTransactionDate = (date: string) => {
+  const [year, month, day] = date.split("-").map(Number);
+  const localDate = new Date(year, month - 1, day);
+
+  return localDate.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+  });
+};
+
 export const transactionColumns: TableColumn<Transaction>[] = [
   {
     accessorKey: "type",
@@ -62,15 +72,7 @@ export const transactionColumns: TableColumn<Transaction>[] = [
         td: "text-center font-mono",
       },
     },
-    cell: ({ row }) => {
-      return new Date(row.getValue("date")).toLocaleString("en-US", {
-        day: "numeric",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
-    },
+    cell: ({ row }) => formatTransactionDate(row.getValue("date")),
   },
   {
     accessorKey: "comment",

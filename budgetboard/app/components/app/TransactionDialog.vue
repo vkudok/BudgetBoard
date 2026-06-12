@@ -12,7 +12,7 @@
         @submit="onSubmit"
       >
         <div class="flex items-center justify-between pb-7">
-          <PageInfoHeader name="Add transaction" />
+          <PageInfoHeader :name="props.dataToEdit !== null ? 'Edit transaction' : 'Add transaction'" />
           <UButton
             icon="i-lucide-x"
             color="neutral"
@@ -112,6 +112,7 @@
   import PageInfoHeader from "./PageInfoHeader.vue";
   import { useTransactionService } from "~/features/transactions/services/transactions.service";
   import type {
+    Transaction,
     TransactionCreate,
     TransactionType,
   } from "~/features/transactions/models/transactions.model";
@@ -127,9 +128,26 @@
   const toast = useToast();
   const transactionService = useTransactionService();
   const categories = ref<string[]>([]);
-  const emit = defineEmits<{
-    created: [];
+  const props = defineProps<{
+    dataToEdit: Transaction | null;
   }>();
+  const emit = defineEmits<{
+    onClosed: [];
+  }>();
+
+  watch(
+    () => props.dataToEdit,
+    (transaction) => {
+      if (transaction) {
+        isOpen.value = true;
+        state.type = transaction.type;
+        state.amount = transaction.amount;
+        state.category = transaction.category;
+        state.comment = transaction.comment;
+        state.date = transaction.date;
+      }
+    },
+  );
 
   watch(isOpen, async (value) => {
     if (!value) {
@@ -171,14 +189,21 @@
 
   async function onSubmit(event: FormSubmitEvent<TransactionCreate>) {
     try {
-      await transactionService.postTransactions(event.data);
+      if (props.dataToEdit === null) {
+        await transactionService.postTransactions(event.data);
+      } else {
+        await transactionService.editTransactions(
+          props.dataToEdit.id,
+          event.data,
+        );
+      }
       closeModal();
       toast.add({
         title: "Success",
         description: "Saved successfully.",
         color: "success",
       });
-      emit("created");
+      emit("onClosed");
     } catch (error) {
       console.error(error);
       toast.add({

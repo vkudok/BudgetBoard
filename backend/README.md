@@ -38,6 +38,25 @@ Returns the default transaction categories in English from `data/categories.json
 }
 ```
 
+### PUT /transactions/{transaction_id}
+
+Updates one transaction by its `id`.
+
+Input:
+
+```json
+{
+  "type": "expense",
+  "amount": 1500,
+  "category": "Food",
+  "date": "2026-06-12",
+  "comment": "Dinner"
+}
+```
+
+Returns the updated transaction.
+Returns `404 Not Found` when a transaction with this `id` does not exist.
+
 ### DELETE /transactions/{transaction_id}
 
 Deletes one transaction by its `id`.

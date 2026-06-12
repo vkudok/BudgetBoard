@@ -4,20 +4,22 @@
       <div class="flex flex-col gap-6 p-7">
         <div>
           <h2 class="text-xl font-semibold">{{ props.title }}</h2>
-          <p class="text-sm text-gray-500">{{ props.description }}</p>
+          <p class="text-lg mt-5 text-gray-500">{{ props.description }}</p>
         </div>
 
         <div class="flex justify-end gap-2">
           <UButton
             color="neutral"
             variant="outline"
+            size="xl"
             @click="closeDeleteConfirm(false)"
           >
             {{ props.cancelText }}
           </UButton>
 
           <UButton
-            color="error"
+            color="info"
+            size="xl"
             variant="solid"
             @click="closeDeleteConfirm(true)"
           >

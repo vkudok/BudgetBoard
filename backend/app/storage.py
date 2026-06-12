@@ -1,7 +1,8 @@
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
-from app.models import Transaction
+from app.models import Transaction, TransactionCreate
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 TRANSACTIONS_FILE = DATA_DIR / "transactions.json"
@@ -36,6 +37,29 @@ def save_transaction(transaction: Transaction) -> Transaction:
     save_transactions(transactions)
 
     return transaction
+
+
+def update_transaction(
+    transaction_id: str, payload: TransactionCreate
+) -> Transaction | None:
+    transactions = load_transactions()
+
+    for index, transaction in enumerate(transactions):
+        if transaction.id != transaction_id:
+            continue
+
+        updated_transaction = Transaction(
+            id=transaction.id,
+            createdAt=transaction.createdAt,
+            updatedAt=datetime.now(timezone.utc),
+            **payload.model_dump(),
+        )
+        transactions[index] = updated_transaction
+        save_transactions(transactions)
+
+        return updated_transaction
+
+    return None
 
 
 def delete_transaction(transaction_id: str) -> bool:

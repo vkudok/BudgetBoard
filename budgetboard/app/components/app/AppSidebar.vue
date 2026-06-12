@@ -11,7 +11,7 @@
         :to="link.to"
         :icon="link.icon"
         :variant="isActiveLink(link.to) ? 'solid' : 'ghost'"
-        color="neutral"
+        color="info"
         block
       >
         {{ link.label }}

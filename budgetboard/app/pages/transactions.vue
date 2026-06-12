@@ -2,7 +2,10 @@
   <div class="h-full flex flex-col">
     <div class="flex justify-between">
       <PageInfoHeader name="Transaction List" />
-      <TransactionDialog @created="loadTransactions" />
+      <TransactionDialog
+        :data-to-edit="dataToEdit"
+        @on-closed="loadTransactions"
+      />
     </div>
     <AppGrid
       class="flex-1"
@@ -13,7 +16,7 @@
       :need-global-filter="true"
     />
     <ConfirmDialog
-      :open="isDeleteConfirmOpen"
+      :open="openDeleteDialog"
       :title="`Delete transaction?`"
       :description="`Are you sure you want to delete this transaction? This action cannot be undone.`"
       :confirm-text="`Delete`"
@@ -41,10 +44,11 @@
   import ConfirmDialog from "~/components/app/ConfirmDialog.vue";
 
   const data = ref<Transaction[]>([]);
+  const dataToEdit = ref<Transaction | null>(null);
   const columns = [...transactionColumns, actionButtons(getRowItems)];
   const transactionService = useTransactionService();
   const isLoading = ref(false);
-  const isDeleteConfirmOpen = ref(false);
+  const openDeleteDialog = ref(false);
   const deleteRow = ref<Row<Transaction> | null>(null);
 
   onMounted(async () => {
@@ -53,8 +57,10 @@
 
   async function loadTransactions() {
     isLoading.value = true;
+    if (dataToEdit.value !== null) {
+      dataToEdit.value = null;
+    }
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       data.value = await transactionService.getTransactions();
     } catch (error) {
       console.error(error);
@@ -64,7 +70,7 @@
   }
 
   async function confirmDelete(state: boolean) {
-    isDeleteConfirmOpen.value = false;
+    openDeleteDialog.value = false;
     if (state && deleteRow.value) {
       await useTransactionService().deleteTransaction(
         deleteRow.value.original.id,
@@ -80,7 +86,7 @@
         label: "Delete",
         icon: "i-lucide-trash-2",
         async onSelect() {
-          isDeleteConfirmOpen.value = true;
+          openDeleteDialog.value = true;
           deleteRow.value = row;
         },
       },
@@ -89,6 +95,7 @@
         icon: "i-lucide-pencil",
         onSelect() {
           console.log(row);
+          dataToEdit.value = row.original;
           // copy(row.original.id)
           //
           // toast.add({

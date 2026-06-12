@@ -20,14 +20,16 @@ export function useTransactionService() {
   }
 
   async function postTransactions(requestBody: TransactionCreate) {
-    const body = {
-      ...requestBody,
-      category: requestBody.category || undefined,
-    };
-
     return await $fetch<Transaction>(`${apiUrl}/transactions`, {
       method: "POST",
-      body,
+      body: requestBody,
+    });
+  }
+
+  async function editTransactions(id: string, requestBody: TransactionCreate) {
+    return await $fetch<Transaction>(`${apiUrl}/transactions/${id}`, {
+      method: "PUT",
+      body: requestBody,
     });
   }
 
@@ -40,6 +42,7 @@ export function useTransactionService() {
   return {
     getTransactionsCategories,
     getTransactions,
+    editTransactions,
     postTransactions,
     deleteTransaction,
   };
