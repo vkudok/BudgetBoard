@@ -4,7 +4,7 @@
     <!--    <div v-if="isOpen">-->
     <!--      <AppSidebar/>-->
     <!--    </div>-->
-    <main class="min-w-0 flex-1 p-6">
+    <main class="min-w-0 flex-1 p-6 overflow-hidden h-100vh">
       <!--      <AppBurgerButton class="ml-7 m-5.5 mr-0" :isOpen="isOpen" @click="isOpen = !isOpen"/>-->
       <slot />
     </main>

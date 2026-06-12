@@ -54,22 +54,22 @@
   async function loadTransactions() {
     isLoading.value = true;
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       data.value = await transactionService.getTransactions();
-      console.log(data.value);
-      isLoading.value = false;
     } catch (error) {
       console.error(error);
+    } finally {
       isLoading.value = false;
     }
   }
 
-  //TODO сделать релоад таблицы
   async function confirmDelete(state: boolean) {
     isDeleteConfirmOpen.value = false;
     if (state && deleteRow.value) {
       await useTransactionService().deleteTransaction(
         deleteRow.value.original.id,
       );
+      await loadTransactions();
       deleteRow.value = null;
     }
   }

@@ -13,6 +13,7 @@
   </div>
   <UTable
     v-model:global-filter="globalFilter"
+    sticky
     :loading="isLoading"
     loading-color="secondary"
     loading-animation="carousel"
