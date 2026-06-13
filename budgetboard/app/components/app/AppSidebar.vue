@@ -11,7 +11,7 @@
         :to="link.to"
         :icon="link.icon"
         :variant="isActiveLink(link.to) ? 'solid' : 'ghost'"
-        color="neutral"
+        color="info"
         block
       >
         {{ link.label }}
@@ -28,9 +28,9 @@
 </template>
 
 <script setup lang="ts">
-import { sidebarLinks } from '../../constants/navigation'
+  import { sidebarLinks } from "../../constants/navigation";
 
-const route = useRoute()
+  const route = useRoute();
 
-const isActiveLink = (to: string) => route.path === to
+  const isActiveLink = (to: string) => route.path === to;
 </script>

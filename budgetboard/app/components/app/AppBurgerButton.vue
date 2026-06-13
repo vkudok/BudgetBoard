@@ -23,23 +23,24 @@
 </template>
 
 <script setup lang="ts">
-const props = withDefaults(
-  defineProps<{
-    isOpen?: boolean
-    disabled?: boolean
-    ariaLabel?: string
-  }>(),
-  {
-    isOpen: false,
-    disabled: false,
-    ariaLabel: undefined
-  }
-)
+  const props = withDefaults(
+    defineProps<{
+      isOpen?: boolean;
+      disabled?: boolean;
+      ariaLabel?: string;
+    }>(),
+    {
+      isOpen: false,
+      disabled: false,
+      ariaLabel: undefined,
+    },
+  );
 
-const emit = defineEmits<{
-  click: [event: MouseEvent]
-}>()
+  const emit = defineEmits<{
+    click: [event: MouseEvent];
+  }>();
 
-const buttonLabel = computed(() => props.ariaLabel ?? (props.isOpen ? 'Close menu' : 'Open menu'))
+  const buttonLabel = computed(
+    () => props.ariaLabel ?? (props.isOpen ? "Close menu" : "Open menu"),
+  );
 </script>
-

@@ -39,4 +39,5 @@ if [ "$has_budgetboard_changes" != "1" ]; then
 fi
 
 cd budgetboard
+npx prettier --write app/components/app/TransactionDialog.vue
 npm run lint
