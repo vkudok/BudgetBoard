@@ -34,6 +34,8 @@ If the answer involves code flow, Codex should explain the full path from the en
 
 ## Code Changes
 
+Codex should not write or change code unless the user explicitly asks for a code change.
+
 When the user explicitly asks Codex to change, add, remove, or fix something in the code, Codex should make the change directly.
 
 Codex should:

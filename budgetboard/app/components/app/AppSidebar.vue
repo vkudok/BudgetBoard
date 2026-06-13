@@ -11,7 +11,7 @@
         :to="link.to"
         :icon="link.icon"
         :variant="isActiveLink(link.to) ? 'solid' : 'ghost'"
-        color="info"
+        :color="isActiveLink(link.to) ? 'info' : 'neutral'"
         block
       >
         {{ link.label }}
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-  import { sidebarLinks } from "../../constants/navigation";
+  import { sidebarLinks } from "~/constants/navigation";
 
   const route = useRoute();
 

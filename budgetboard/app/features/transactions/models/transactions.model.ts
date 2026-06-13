@@ -16,6 +16,11 @@ export interface Transaction extends TransactionCreate {
   updatedAt: string;
 }
 
+export interface TotalBalance {
+  total: number;
+  changePercent: number;
+}
+
 export type TransactionType = "income" | "expense";
 
 const formatTransactionDate = (date: string) => {

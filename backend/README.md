@@ -26,6 +26,76 @@ Returns all saved transactions from `data/transactions.json`.
 
 Returns the default transaction categories in English from `data/categories.json`.
 
+The statistics endpoints return `changePercent` as a value from `0` to `100`.
+
+### GET /transactions/income/total
+
+Returns the sum of all transaction amounts where `type` is `income`.
+The `changePercent` value compares the current month total with the average
+monthly income from previous months. If there are no previous months, it compares
+the current month total with the current month income before today.
+
+Output:
+
+```json
+{
+  "total": 5000,
+  "changePercent": 10
+}
+```
+
+### GET /transactions/expense/total
+
+Returns the sum of all transaction amounts where `type` is `expense`.
+The `changePercent` value compares the current month total with the average
+monthly expense from previous months. If there are no previous months, it compares
+the current month total with the current month expense before today.
+
+Output:
+
+```json
+{
+  "total": 2700,
+  "changePercent": 5
+}
+```
+
+### GET /transactions/balance
+
+Returns the remaining money from received income.
+
+The backend first sums all transaction amounts where `type` is `income`,
+then subtracts the sum of all transaction amounts where `type` is `expense`.
+If the result is less than `0`, the endpoint returns `0`.
+The `changePercent` value compares the current month balance with the average
+monthly balance from previous months. If there are no previous months, it compares
+the current month balance with the current month balance before today.
+
+Output:
+
+```json
+{
+  "total": 2300,
+  "changePercent": 15
+}
+```
+
+### GET /transactions/count
+
+Returns the total number of saved transactions.
+The `changePercent` value compares the current month count with the average
+monthly transaction count from previous months. If there are no previous months,
+it compares the current month count with the current month count before today.
+
+Output:
+
+```json
+{
+  "total": 12,
+  "changePercent": 20
+}
+```
+
 ### POST /transactions
 
 ```json

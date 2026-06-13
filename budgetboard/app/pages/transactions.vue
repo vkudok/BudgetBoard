@@ -94,15 +94,7 @@
         label: "Edit",
         icon: "i-lucide-pencil",
         onSelect() {
-          console.log(row);
           dataToEdit.value = row.original;
-          // copy(row.original.id)
-          //
-          // toast.add({
-          //     title: 'Payment ID copied to clipboard!',
-          //     color: 'success',
-          //     icon: 'i-lucide-circle-check'
-          // })
         },
       },
     ];
