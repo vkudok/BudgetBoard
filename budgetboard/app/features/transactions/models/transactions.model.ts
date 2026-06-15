@@ -95,10 +95,10 @@ export const transactionMeta: TableMeta<Transaction> = {
   class: {
     tr: (row: Row<Transaction>) => {
       if (row.original.type === "expense") {
-        return "bg-error/10 dark:bg-error/20";
+        return "bg-error/20";
       }
       if (row.original.type === "income") {
-        return "bg-success/10 dark:bg-success/20";
+        return "bg-success/20";
       }
       return "";
     },
