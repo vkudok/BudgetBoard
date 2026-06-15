@@ -33,7 +33,8 @@ The statistics endpoints return `changePercent` as a value from `0` to `100`.
 Returns the sum of all transaction amounts where `type` is `income`.
 The `changePercent` value compares the current month total with the average
 monthly income from previous months. If there are no previous months, it compares
-the current month total with the current month income before today.
+the current month total with the current month income before the latest income
+transaction date.
 
 Output:
 
@@ -49,7 +50,8 @@ Output:
 Returns the sum of all transaction amounts where `type` is `expense`.
 The `changePercent` value compares the current month total with the average
 monthly expense from previous months. If there are no previous months, it compares
-the current month total with the current month expense before today.
+the current month total with the current month expense before the latest expense
+transaction date.
 
 Output:
 
@@ -69,7 +71,8 @@ then subtracts the sum of all transaction amounts where `type` is `expense`.
 If the result is less than `0`, the endpoint returns `0`.
 The `changePercent` value compares the current month balance with the average
 monthly balance from previous months. If there are no previous months, it compares
-the current month balance with the current month balance before today.
+the current month balance with the current month balance before the latest
+transaction date.
 
 Output:
 
@@ -85,7 +88,8 @@ Output:
 Returns the total number of saved transactions.
 The `changePercent` value compares the current month count with the average
 monthly transaction count from previous months. If there are no previous months,
-it compares the current month count with the current month count before today.
+it compares the current month count with the current month count before the latest
+transaction date.
 
 Output:
 

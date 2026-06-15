@@ -18,11 +18,12 @@
       <span
         :class="[
           'text-sm ',
-          props.changePercentage > 0 ? 'text-green-600' : 'text-red-600',
+          props.changePercentage >= 0 && (props.type === 'income' || props.type === 'value') ? 'text-green-600' : 'text-red-600',
         ]"
         >{{
-          (props.changePercentage > 0 ? `+` : `-`) + props.changePercentage
-        }}%</span>
+          (props.changePercentage >= 0 ? `+` : `-`) + props.changePercentage
+        }}%</span
+      >
       <span class="text-sm">{{ props.description }}</span>
     </div>
   </div>

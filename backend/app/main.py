@@ -81,6 +81,25 @@ def get_comparison_value(
     return current_month_previous_value
 
 
+def get_current_month_transactions(
+    transactions: list[Transaction],
+) -> list[Transaction]:
+    current_month_key = get_current_month_key()
+
+    return [
+        transaction
+        for transaction in transactions
+        if get_transaction_month_key(transaction) == current_month_key
+    ]
+
+
+def get_latest_transaction_date(transactions: list[Transaction]) -> date | None:
+    if not transactions:
+        return None
+
+    return max(transaction.date for transaction in transactions)
+
+
 def get_monthly_totals_by_transaction_type(
     transactions: list[Transaction], transaction_type: str
 ) -> dict[tuple[int, int], float]:
@@ -109,18 +128,23 @@ def get_current_month_total_by_transaction_type(
     )
 
 
-def get_current_month_total_before_today_by_transaction_type(
+def get_current_month_total_before_latest_date_by_transaction_type(
     transactions: list[Transaction], transaction_type: str
 ) -> float:
-    today = date.today()
-    current_month_key = get_current_month_key()
+    current_month_transactions = [
+        transaction
+        for transaction in get_current_month_transactions(transactions)
+        if transaction.type == transaction_type
+    ]
+    latest_date = get_latest_transaction_date(current_month_transactions)
+
+    if latest_date is None:
+        return 0
 
     return sum(
         transaction.amount
-        for transaction in transactions
-        if transaction.type == transaction_type
-        and get_transaction_month_key(transaction) == current_month_key
-        and transaction.date < today
+        for transaction in current_month_transactions
+        if transaction.date < latest_date
     )
 
 
@@ -132,7 +156,9 @@ def get_income_total() -> TransactionAmountTotal:
     previous_average = get_previous_month_average(monthly_totals)
     previous_value = get_comparison_value(
         previous_average,
-        get_current_month_total_before_today_by_transaction_type(transactions, "income"),
+        get_current_month_total_before_latest_date_by_transaction_type(
+            transactions, "income"
+        ),
     )
     change_percent = calculate_change_percent(total, previous_value)
 
@@ -147,7 +173,9 @@ def get_expense_total() -> TransactionAmountTotal:
     previous_average = get_previous_month_average(monthly_totals)
     previous_value = get_comparison_value(
         previous_average,
-        get_current_month_total_before_today_by_transaction_type(transactions, "expense"),
+        get_current_month_total_before_latest_date_by_transaction_type(
+            transactions, "expense"
+        ),
     )
     change_percent = calculate_change_percent(total, previous_value)
 
@@ -169,29 +197,23 @@ def get_monthly_balances(transactions: list[Transaction]) -> dict[tuple[int, int
 
 
 def get_current_month_transaction_count(transactions: list[Transaction]) -> int:
-    current_month_key = get_current_month_key()
-
-    return len(
-        [
-            transaction
-            for transaction in transactions
-            if get_transaction_month_key(transaction) == current_month_key
-        ]
-    )
+    return len(get_current_month_transactions(transactions))
 
 
-def get_current_month_transaction_count_before_today(
+def get_current_month_transaction_count_before_latest_date(
     transactions: list[Transaction],
 ) -> int:
-    today = date.today()
-    current_month_key = get_current_month_key()
+    current_month_transactions = get_current_month_transactions(transactions)
+    latest_date = get_latest_transaction_date(current_month_transactions)
+
+    if latest_date is None:
+        return 0
 
     return len(
         [
             transaction
-            for transaction in transactions
-            if get_transaction_month_key(transaction) == current_month_key
-            and transaction.date < today
+            for transaction in current_month_transactions
+            if transaction.date < latest_date
         ]
     )
 
@@ -216,10 +238,10 @@ def get_balance() -> TransactionAmountTotal:
     total = max(income_total - expense_total, 0)
     monthly_balances = get_monthly_balances(transactions)
     previous_average = get_previous_month_average(monthly_balances)
-    previous_income_total = get_current_month_total_before_today_by_transaction_type(
+    previous_income_total = get_current_month_total_before_latest_date_by_transaction_type(
         transactions, "income"
     )
-    previous_expense_total = get_current_month_total_before_today_by_transaction_type(
+    previous_expense_total = get_current_month_total_before_latest_date_by_transaction_type(
         transactions, "expense"
     )
     previous_value = get_comparison_value(
@@ -239,7 +261,7 @@ def get_transaction_count() -> TransactionAmountTotal:
     previous_average = get_previous_month_average(monthly_counts)
     previous_value = get_comparison_value(
         previous_average,
-        get_current_month_transaction_count_before_today(transactions),
+        get_current_month_transaction_count_before_latest_date(transactions),
     )
     change_percent = calculate_change_percent(total, previous_value)
 
