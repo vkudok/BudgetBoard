@@ -21,7 +21,7 @@
     :columns="columns"
     :column-visibility="columnVisibility"
     :meta="meta"
-    class="flex-1 mt-4 border border-gray-300 rounded-[7px]"
+    class="flex-1 mt-4 border border-gray-300 dark:border-gray-700 rounded-[7px]"
   />
 </template>
 

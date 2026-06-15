@@ -1,16 +1,16 @@
 <template>
   <div
-    class="w-50 font-semibold rounded-[7px] border border-gray-300 shadow-sm flex flex-col items-start gap-2 p-4"
+    class="w-50 font-semibold rounded-[7px] border border-gray-300 dark:border-gray-700 shadow-sm flex flex-col items-start gap-2 p-4"
   >
     <span class="text-sm">{{ props.title }}</span>
     <span
       :class="[
         'text-xl font-bold',
         props.type === 'value'
-          ? 'text-black'
+          ? 'text-gray-950 dark:text-gray-50'
           : props.type === 'income'
-            ? 'text-green-600'
-            : 'text-red-600',
+            ? 'text-green-600 dark:text-green-400'
+            : 'text-red-600 dark:text-red-400',
       ]"
       >{{ props.value }}</span
     >
@@ -18,7 +18,7 @@
       <span
         :class="[
           'text-sm ',
-          props.changePercentage >= 0 && (props.type === 'income' || props.type === 'value') ? 'text-green-600' : 'text-red-600',
+          props.changePercentage >= 0 && (props.type === 'income' || props.type === 'value') ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
         ]"
         >{{
           (props.changePercentage >= 0 ? `+` : `-`) + props.changePercentage
