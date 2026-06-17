@@ -1,11 +1,14 @@
 from datetime import date
+from typing import Literal
 
-from fastapi import FastAPI, HTTPException, Response, status
+from fastapi import FastAPI, HTTPException, Query, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.models import (
     Transaction,
     TransactionAmountTotal,
+    TransactionCategoriesSummary,
+    TransactionCategorySummaryItem,
     TransactionCreate,
     create_transaction,
 )
@@ -38,6 +41,39 @@ def get_transaction_categories() -> list[str]:
     return load_categories()
 
 
+@app.get(
+    "/transactions/categories/summary",
+    response_model=TransactionCategoriesSummary,
+)
+def get_transaction_categories_summary(
+    transaction_type: Literal["income", "expense"] = Query(alias="type"),
+) -> TransactionCategoriesSummary:
+    transactions = load_transactions()
+    category_totals = get_current_month_category_totals_by_transaction_type(
+        transactions,
+        transaction_type,
+    )
+    total = sum(category_totals.values())
+    items = [
+        TransactionCategorySummaryItem(
+            category=category,
+            amount=amount,
+            percent=calculate_percent(amount, total),
+        )
+        for category, amount in sorted(
+            category_totals.items(),
+            key=lambda item: item[1],
+            reverse=True,
+        )
+    ]
+
+    return TransactionCategoriesSummary(
+        type=transaction_type,
+        total=total,
+        items=items,
+    )
+
+
 def get_current_month_key() -> tuple[int, int]:
     today = date.today()
 
@@ -56,6 +92,13 @@ def calculate_change_percent(current_value: float, previous_value: float) -> flo
     limited_change_percent = min(max(change_percent, 0), 100)
 
     return round(limited_change_percent, 2)
+
+
+def calculate_percent(value: float, total: float) -> float:
+    if total == 0:
+        return 0
+
+    return round((value / total) * 100, 2)
 
 
 def get_previous_month_average(monthly_values: dict[tuple[int, int], float]) -> float | None:
@@ -126,6 +169,21 @@ def get_current_month_total_by_transaction_type(
         if transaction.type == transaction_type
         and get_transaction_month_key(transaction) == current_month_key
     )
+
+
+def get_current_month_category_totals_by_transaction_type(
+    transactions: list[Transaction], transaction_type: str
+) -> dict[str, float]:
+    category_totals: dict[str, float] = {}
+
+    for transaction in get_current_month_transactions(transactions):
+        if transaction.type != transaction_type:
+            continue
+
+        category = transaction.category or "Uncategorized"
+        category_totals[category] = category_totals.get(category, 0) + transaction.amount
+
+    return category_totals
 
 
 def get_current_month_total_before_latest_date_by_transaction_type(

@@ -158,7 +158,7 @@
       return;
     }
 
-    categories.value = await transactionService.getTransactionsCategories();
+    categories.value = await transactionService.categories.getCategories();
   });
 
   function validate(state: Partial<TransactionCreate>): FormError[] {
@@ -194,9 +194,9 @@
   async function onSubmit(event: FormSubmitEvent<TransactionCreate>) {
     try {
       if (!props.dataToEdit) {
-        await transactionService.postTransactions(event.data);
+        await transactionService.transactions.postTransactions(event.data);
       } else {
-        await transactionService.editTransactions(
+        await transactionService.transactions.editTransactions(
           props.dataToEdit.id,
           event.data,
         );

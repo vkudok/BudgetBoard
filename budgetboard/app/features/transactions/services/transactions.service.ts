@@ -1,4 +1,5 @@
 import type {
+  SummaryCategories,
   TotalBalance,
   Transaction,
   TransactionCreate,
@@ -8,7 +9,7 @@ export function useTransactionService() {
   const config = useRuntimeConfig();
   const apiUrl = config.public.apiUrl;
 
-  async function getTransactionsCategories() {
+  async function getCategories() {
     return await $fetch<string[]>(`${apiUrl}/transactions/categories`, {
       method: "GET",
     });
@@ -58,6 +59,15 @@ export function useTransactionService() {
     });
   }
 
+  async function getSummaryCategories(type: "income" | "expense") {
+    return await $fetch<SummaryCategories>(
+      `${apiUrl}/transactions/categories/summary?type=${type}`,
+      {
+        method: "GET",
+      },
+    );
+  }
+
   async function deleteTransaction(id: string): Promise<void> {
     await $fetch(`${apiUrl}/transactions/${id}`, {
       method: "DELETE",
@@ -65,14 +75,21 @@ export function useTransactionService() {
   }
 
   return {
-    getTransactionsCategories,
-    getTransactions,
-    getTotalBalance,
-    getExpenseTotalBalance,
-    getIncomeTotalBalance,
-    editTransactions,
-    postTransactions,
-    getTotalCount,
-    deleteTransaction,
+    categories: {
+      getCategories,
+      getSummaryCategories,
+    },
+    transactions: {
+      getTransactions,
+      postTransactions,
+      editTransactions,
+      deleteTransaction,
+    },
+    summary: {
+      getTotalBalance,
+      getExpenseTotalBalance,
+      getIncomeTotalBalance,
+      getTotalCount,
+    },
   };
 }

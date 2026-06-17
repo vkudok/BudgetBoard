@@ -21,6 +21,18 @@ export interface TotalBalance {
   changePercent: number;
 }
 
+export interface SummaryCategoriesItems {
+  category: string;
+  amount: number;
+  percent: number;
+}
+
+export interface SummaryCategories {
+  type: string;
+  total: number;
+  items: SummaryCategoriesItems[];
+}
+
 export type TransactionType = "income" | "expense";
 
 const formatTransactionDate = (date: string) => {

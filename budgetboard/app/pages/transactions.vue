@@ -61,7 +61,7 @@
       dataToEdit.value = null;
     }
     try {
-      data.value = await transactionService.getTransactions();
+      data.value = await transactionService.transactions.getTransactions();
     } catch (error) {
       console.error(error);
     } finally {
@@ -72,7 +72,7 @@
   async function confirmDelete(state: boolean) {
     openDeleteDialog.value = false;
     if (state && deleteRow.value) {
-      await useTransactionService().deleteTransaction(
+      await transactionService.transactions.deleteTransaction(
         deleteRow.value.original.id,
       );
       await loadTransactions();
