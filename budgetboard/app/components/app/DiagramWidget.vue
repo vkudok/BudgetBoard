@@ -1,13 +1,12 @@
 <template>
   <ClientOnly>
-    <div class="h-full flex items-center">
-      <ApexChart
-        :height="props.chart.height"
-        :type="props.chart.type"
-        :series="props.chart.series"
-        :options="props.chart.options ?? {}"
-      />
-    </div>
+    <ApexChart
+      width="100%"
+      :height="props.chart.height"
+      :type="props.chart.type"
+      :series="props.chart.series"
+      :options="props.chart.options ?? {}"
+    />
   </ClientOnly>
 </template>
 
