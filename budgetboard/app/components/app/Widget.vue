@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="font-semibold rounded-[7px] border border-gray-300 dark:border-gray-700 shadow-sm flex flex-col items-start gap-2 p-4"
-  >
-    <span class="text-sm">{{ props.title }}</span>
+  <DynamicContentWidget :title="props.title">
     <span
       :class="[
         'text-xl font-bold',
@@ -14,7 +11,7 @@
       ]"
       >{{ props.value }}</span
     >
-    <div class="flex flex-col justify-center flex-1">
+    <div class="flex flex-col justify-center flex-1 mt-2">
       <slot v-if="slots.default" />
       <div class="flex gap-1">
         <span
@@ -32,10 +29,12 @@
         <span class="text-sm">{{ props.description }}</span>
       </div>
     </div>
-  </div>
+  </DynamicContentWidget>
 </template>
 
 <script setup lang="ts">
+  import DynamicContentWidget from "~/components/app/DynamicContentWidget.vue";
+
   const props = defineProps<{
     title: string;
     value: string;
