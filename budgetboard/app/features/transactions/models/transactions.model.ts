@@ -109,6 +109,11 @@ export function formatCurrency(amount: number) {
 
 export function formatTransactionDate(date: string) {
   const [year, month, day] = date.split("-").map(Number);
+
+  if (year === undefined || month === undefined || day === undefined) {
+    return date;
+  }
+
   const localDate = new Date(year, month - 1, day);
 
   return localDate.toLocaleDateString("en-US", {

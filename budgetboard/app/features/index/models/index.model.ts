@@ -1,7 +1,6 @@
 import type { TableColumn } from "@nuxt/ui";
 import { getGridHeader } from "~/components/features/models/appGrid.model";
 import {
-  formatCurrency,
   formatTransactionDate, getFormattedAmount,
   type Transaction,
 } from "~/features/transactions/models/transactions.model";
