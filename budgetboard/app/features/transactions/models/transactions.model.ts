@@ -1,5 +1,4 @@
 import type { TableColumn } from "@nuxt/ui";
-import type { TableMeta, Row } from "@tanstack/vue-table";
 import { getGridHeader } from "~/components/features/models/appGrid.model";
 
 export interface TransactionCreate {
@@ -35,7 +34,7 @@ export interface SummaryCategories {
 
 export type TransactionType = "income" | "expense";
 
-const formatTransactionDate = (date: string) => {
+export const formatTransactionDate = (date: string) => {
   const [year, month, day] = date.split("-").map(Number);
   const localDate = new Date(year, month - 1, day);
 
@@ -47,46 +46,12 @@ const formatTransactionDate = (date: string) => {
 
 export const transactionColumns: TableColumn<Transaction>[] = [
   {
-    accessorKey: "type",
-    header: ({ column }) => getGridHeader(column, "Type"),
-    meta: {
-      class: {
-        th: "text-center font-semibold",
-        td: "text-center font-mono",
-      },
-    },
-  },
-  {
-    accessorKey: "amount",
-    header: ({ column }) => getGridHeader(column, "Amount"),
-    meta: {
-      class: {
-        th: "text-center font-semibold",
-        td: "text-center font-mono",
-      },
-    },
-    cell: ({ row }) => {
-      return row.getValue("amount") + "₽";
-    },
-  },
-  {
-    accessorKey: "category",
-    header: ({ column }) => getGridHeader(column, "Category"),
-    meta: {
-      class: {
-        th: "text-center font-semibold",
-        td: "text-center font-mono",
-      },
-    },
-    cell: ({ row }) => row.getValue("category") || "-",
-  },
-  {
     accessorKey: "date",
     header: ({ column }) => getGridHeader(column, "Date"),
     meta: {
       class: {
         th: "text-center font-semibold",
-        td: "text-center font-mono",
+        td: "text-center font-semibold",
       },
     },
     cell: ({ row }) => formatTransactionDate(row.getValue("date")),
@@ -97,22 +62,53 @@ export const transactionColumns: TableColumn<Transaction>[] = [
     meta: {
       class: {
         th: "text-center font-semibold",
-        td: "text-center font-mono",
+        td: "text-center font-semibold",
       },
+    },
+  },
+  {
+    accessorKey: "category",
+    header: ({ column }) => getGridHeader(column, "Category"),
+    meta: {
+      class: {
+        th: "text-center font-semibold",
+        td: "text-center font-semibold",
+      },
+    },
+    cell: ({ row }) => row.getValue("category") || "-",
+  },
+  {
+    accessorKey: "type",
+    header: ({ column }) => getGridHeader(column, "Type"),
+    meta: {
+      class: {
+        th: "text-center font-semibold",
+        td: "text-center font-semibold",
+      },
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => getGridHeader(column, "Amount"),
+    meta: {
+      class: {
+        th: "text-center font-semibold",
+        td: "text-center font-semibold",
+      },
+    },
+    cell: ({ row }) => {
+      const type = row.getValue("type") as string;
+      const amount = row.getValue("amount") as number;
+      const isNegative = amount < 0 ? "-" : "+";
+      const amountString = isNegative + formatAmount(amount) + "₽";
+      return h(
+        "span",
+        { class: type === "income" ? "text-success" : "text-error" },
+        amountString,
+      );
     },
   },
 ];
 
-export const transactionMeta: TableMeta<Transaction> = {
-  class: {
-    tr: (row: Row<Transaction>) => {
-      if (row.original.type === "expense") {
-        return "bg-error/20";
-      }
-      if (row.original.type === "income") {
-        return "bg-success/20";
-      }
-      return "";
-    },
-  },
-};
+export const formatAmount = (amount: number) =>
+  new Intl.NumberFormat("de-DE").format(amount);

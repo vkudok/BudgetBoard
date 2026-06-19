@@ -1,17 +1,14 @@
 <template>
-  <div
-    class="font-semibold rounded-[7px] border border-gray-300 dark:border-gray-700 shadow-sm flex flex-col items-start gap-2 p-4"
-  >
-    <span class="text-sm">{{ props.title }}</span>
-    <ClientOnly>
+  <ClientOnly>
+    <div class="h-full flex items-center">
       <ApexChart
-        :height="chart.height"
-        :type="chart.type"
-        :series="chart.series"
-        :options="chart.options ?? {}"
+        :height="props.chart.height"
+        :type="props.chart.type"
+        :series="props.chart.series"
+        :options="props.chart.options ?? {}"
       />
-    </ClientOnly>
-  </div>
+    </div>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
@@ -19,7 +16,6 @@
   import type { DiagramWidgetConfig } from "~/components/features/models/diagramWidget.model";
 
   const props = defineProps<{
-    title: string;
     chart: DiagramWidgetConfig;
   }>();
 </script>

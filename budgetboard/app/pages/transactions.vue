@@ -11,7 +11,6 @@
       class="flex-1"
       :data="data"
       :columns="columns"
-      :meta="transactionMeta"
       :is-loading="isLoading"
       :need-global-filter="true"
     />
@@ -34,7 +33,6 @@
   import {
     type Transaction,
     transactionColumns,
-    transactionMeta,
   } from "~/features/transactions/models/transactions.model";
   import type { Row } from "@tanstack/vue-table";
   import {
