@@ -1,6 +1,6 @@
 import type { TableColumn } from "@nuxt/ui";
-import type { TableMeta, Row } from "@tanstack/vue-table";
 import { getGridHeader } from "~/components/features/models/appGrid.model";
+import type { Row } from "@tanstack/vue-table";
 
 export interface TransactionCreate {
   type: TransactionType;
@@ -16,60 +16,33 @@ export interface Transaction extends TransactionCreate {
   updatedAt: string;
 }
 
+export interface TotalBalance {
+  total: number;
+  changePercent: number;
+}
+
+export interface SummaryCategoriesItems {
+  category: string;
+  amount: number;
+  percent: number;
+}
+
+export interface SummaryCategories {
+  type: string;
+  total: number;
+  items: SummaryCategoriesItems[];
+}
+
 export type TransactionType = "income" | "expense";
 
-const formatTransactionDate = (date: string) => {
-  const [year, month, day] = date.split("-").map(Number);
-  const localDate = new Date(year, month - 1, day);
-
-  return localDate.toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "short",
-  });
-};
-
 export const transactionColumns: TableColumn<Transaction>[] = [
-  {
-    accessorKey: "type",
-    header: ({ column }) => getGridHeader(column, "Type"),
-    meta: {
-      class: {
-        th: "text-center font-semibold",
-        td: "text-center font-mono",
-      },
-    },
-  },
-  {
-    accessorKey: "amount",
-    header: ({ column }) => getGridHeader(column, "Amount"),
-    meta: {
-      class: {
-        th: "text-center font-semibold",
-        td: "text-center font-mono",
-      },
-    },
-    cell: ({ row }) => {
-      return row.getValue("amount") + "₽";
-    },
-  },
-  {
-    accessorKey: "category",
-    header: ({ column }) => getGridHeader(column, "Category"),
-    meta: {
-      class: {
-        th: "text-center font-semibold",
-        td: "text-center font-mono",
-      },
-    },
-    cell: ({ row }) => row.getValue("category") || "-",
-  },
   {
     accessorKey: "date",
     header: ({ column }) => getGridHeader(column, "Date"),
     meta: {
       class: {
         th: "text-center font-semibold",
-        td: "text-center font-mono",
+        td: "text-center font-semibold",
       },
     },
     cell: ({ row }) => formatTransactionDate(row.getValue("date")),
@@ -80,22 +53,71 @@ export const transactionColumns: TableColumn<Transaction>[] = [
     meta: {
       class: {
         th: "text-center font-semibold",
-        td: "text-center font-mono",
+        td: "text-center font-semibold",
       },
     },
   },
-];
-
-export const transactionMeta: TableMeta<Transaction> = {
-  class: {
-    tr: (row: Row<Transaction>) => {
-      if (row.original.type === "expense") {
-        return "bg-error/10";
-      }
-      if (row.original.type === "income") {
-        return "bg-success/10";
-      }
-      return "";
+  {
+    accessorKey: "category",
+    header: ({ column }) => getGridHeader(column, "Category"),
+    meta: {
+      class: {
+        th: "text-center font-semibold",
+        td: "text-center font-semibold",
+      },
+    },
+    cell: ({ row }) => row.getValue("category") || "-",
+  },
+  {
+    accessorKey: "type",
+    header: ({ column }) => getGridHeader(column, "Type"),
+    meta: {
+      class: {
+        th: "text-center font-semibold",
+        td: "text-center font-semibold",
+      },
     },
   },
-};
+  {
+    accessorKey: "amount",
+    header: ({ column }) => getGridHeader(column, "Amount"),
+    meta: {
+      class: {
+        th: "text-center font-semibold",
+        td: "text-center font-semibold",
+      },
+    },
+    cell: ({ row }) => getFormattedAmount(row),
+  },
+];
+
+export function getFormattedAmount(row: Row<Transaction>) {
+  const type = row.getValue("type") as string;
+  const amount = row.getValue("amount") as number;
+  const isNegative = type === "income" ? "+" : "-";
+  const amountString = isNegative + formatCurrency(amount) + "₽";
+  return h(
+    "span",
+    { class: type === "income" ? "text-success" : "text-error" },
+    amountString,
+  );
+}
+
+export function formatCurrency(amount: number) {
+  return new Intl.NumberFormat("de-DE").format(amount);
+}
+
+export function formatTransactionDate(date: string) {
+  const [year, month, day] = date.split("-").map(Number);
+
+  if (year === undefined || month === undefined || day === undefined) {
+    return date;
+  }
+
+  const localDate = new Date(year, month - 1, day);
+
+  return localDate.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+  });
+}

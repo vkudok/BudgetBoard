@@ -11,7 +11,6 @@
       class="flex-1"
       :data="data"
       :columns="columns"
-      :meta="transactionMeta"
       :is-loading="isLoading"
       :need-global-filter="true"
     />
@@ -34,7 +33,6 @@
   import {
     type Transaction,
     transactionColumns,
-    transactionMeta,
   } from "~/features/transactions/models/transactions.model";
   import type { Row } from "@tanstack/vue-table";
   import {
@@ -61,7 +59,7 @@
       dataToEdit.value = null;
     }
     try {
-      data.value = await transactionService.getTransactions();
+      data.value = await transactionService.transactions.getTransactions();
     } catch (error) {
       console.error(error);
     } finally {
@@ -72,7 +70,7 @@
   async function confirmDelete(state: boolean) {
     openDeleteDialog.value = false;
     if (state && deleteRow.value) {
-      await useTransactionService().deleteTransaction(
+      await transactionService.transactions.deleteTransaction(
         deleteRow.value.original.id,
       );
       await loadTransactions();
@@ -94,15 +92,7 @@
         label: "Edit",
         icon: "i-lucide-pencil",
         onSelect() {
-          console.log(row);
           dataToEdit.value = row.original;
-          // copy(row.original.id)
-          //
-          // toast.add({
-          //     title: 'Payment ID copied to clipboard!',
-          //     color: 'success',
-          //     icon: 'i-lucide-circle-check'
-          // })
         },
       },
     ];

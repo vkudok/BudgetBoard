@@ -15,9 +15,11 @@
   "dependencies": {
     "@lucide/vue": "^1.17.0",
     "@nuxt/ui": "^4.8.1",
+    "apexcharts": "^5.15.0",
     "nuxt": "^4.4.2",
     "vue": "^3.5.33",
-    "vue-router": "^5.0.6"
+    "vue-router": "^5.0.6",
+    "vue3-apexcharts": "^1.11.1"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",

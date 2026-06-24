@@ -25,6 +25,23 @@ class Transaction(TransactionCreate):
     updatedAt: datetime
 
 
+class TransactionAmountTotal(BaseModel):
+    total: float
+    changePercent: float
+
+
+class TransactionCategorySummaryItem(BaseModel):
+    category: str
+    amount: float
+    percent: float
+
+
+class TransactionCategoriesSummary(BaseModel):
+    type: str
+    total: float
+    items: list[TransactionCategorySummaryItem]
+
+
 def create_transaction(payload: TransactionCreate) -> Transaction:
     now = datetime.now(timezone.utc)
 

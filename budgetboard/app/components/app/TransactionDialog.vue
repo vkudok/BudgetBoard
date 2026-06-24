@@ -12,7 +12,11 @@
         @submit="onSubmit"
       >
         <div class="flex items-center justify-between pb-7">
-          <PageInfoHeader :name="props.dataToEdit !== null ? 'Edit transaction' : 'Add transaction'" />
+          <PageInfoHeader
+            :name="
+              props.dataToEdit !== null ? 'Edit transaction' : 'Add transaction'
+            "
+          />
           <UButton
             icon="i-lucide-x"
             color="neutral"
@@ -129,7 +133,7 @@
   const transactionService = useTransactionService();
   const categories = ref<string[]>([]);
   const props = defineProps<{
-    dataToEdit: Transaction | null;
+    dataToEdit?: Transaction | null;
   }>();
   const emit = defineEmits<{
     onClosed: [];
@@ -154,7 +158,7 @@
       return;
     }
 
-    categories.value = await transactionService.getTransactionsCategories();
+    categories.value = await transactionService.categories.getCategories();
   });
 
   function validate(state: Partial<TransactionCreate>): FormError[] {
@@ -189,10 +193,10 @@
 
   async function onSubmit(event: FormSubmitEvent<TransactionCreate>) {
     try {
-      if (props.dataToEdit === null) {
-        await transactionService.postTransactions(event.data);
+      if (!props.dataToEdit) {
+        await transactionService.transactions.postTransactions(event.data);
       } else {
-        await transactionService.editTransactions(
+        await transactionService.transactions.editTransactions(
           props.dataToEdit.id,
           event.data,
         );

@@ -1,13 +1,16 @@
 import type {
+  SummaryCategories,
+  TotalBalance,
   Transaction,
   TransactionCreate,
+  TransactionType,
 } from "~/features/transactions/models/transactions.model";
 
 export function useTransactionService() {
   const config = useRuntimeConfig();
   const apiUrl = config.public.apiUrl;
 
-  async function getTransactionsCategories() {
+  async function getCategories() {
     return await $fetch<string[]>(`${apiUrl}/transactions/categories`, {
       method: "GET",
     });
@@ -33,6 +36,39 @@ export function useTransactionService() {
     });
   }
 
+  async function getTotalBalance() {
+    return await $fetch<TotalBalance>(`${apiUrl}/transactions/balance`, {
+      method: "GET",
+    });
+  }
+
+  async function getExpenseTotalBalance() {
+    return await $fetch<TotalBalance>(`${apiUrl}/transactions/expense/total`, {
+      method: "GET",
+    });
+  }
+
+  async function getIncomeTotalBalance() {
+    return await $fetch<TotalBalance>(`${apiUrl}/transactions/income/total`, {
+      method: "GET",
+    });
+  }
+
+  async function getTotalCount() {
+    return await $fetch<TotalBalance>(`${apiUrl}/transactions/count`, {
+      method: "GET",
+    });
+  }
+
+  async function getSummaryCategories(type: TransactionType) {
+    return await $fetch<SummaryCategories>(
+      `${apiUrl}/transactions/categories/summary?type=${type}`,
+      {
+        method: "GET",
+      },
+    );
+  }
+
   async function deleteTransaction(id: string): Promise<void> {
     await $fetch(`${apiUrl}/transactions/${id}`, {
       method: "DELETE",
@@ -40,10 +76,21 @@ export function useTransactionService() {
   }
 
   return {
-    getTransactionsCategories,
-    getTransactions,
-    editTransactions,
-    postTransactions,
-    deleteTransaction,
+    categories: {
+      getCategories,
+      getSummaryCategories,
+    },
+    transactions: {
+      getTransactions,
+      postTransactions,
+      editTransactions,
+      deleteTransaction,
+    },
+    summary: {
+      getTotalBalance,
+      getExpenseTotalBalance,
+      getIncomeTotalBalance,
+      getTotalCount,
+    },
   };
 }
