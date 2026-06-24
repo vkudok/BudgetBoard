@@ -5,7 +5,7 @@
       <TransactionDialog @on-closed="refreshAll()" />
     </div>
     <div class="flex gap-4">
-      <Widget
+      <BaseWidget
         class="flex-1"
         title="Total balance"
         :value="`${formatCurrency(totalBalance.total)}₽`"
@@ -16,8 +16,8 @@
         <div class="mb-5">
           <DiagramWidget :chart="dataForChart" />
         </div>
-      </Widget>
-      <Widget
+      </BaseWidget>
+      <BaseWidget
         class="flex-1"
         title="Total income"
         :value="`${formatCurrency(incomeTotalBalance.total)}₽`"
@@ -25,7 +25,7 @@
         :change-percentage="incomeTotalBalance.changePercent"
         description="this month"
       />
-      <Widget
+      <BaseWidget
         class="flex-1"
         title="Total expenses"
         :value="`${formatCurrency(expenseTotalBalance.total)}₽`"
@@ -33,7 +33,7 @@
         :change-percentage="expenseTotalBalance.changePercent"
         description="this month"
       />
-      <Widget
+      <BaseWidget
         class="flex-1"
         title="Transactions count"
         :value="`${totalCount.total}`"
@@ -67,7 +67,7 @@
 <script setup lang="ts">
   import TransactionDialog from "~/features/transactions/ui/TransactionDialog.vue";
   import PageInfoHeader from "~/shared/ui/PageInfoHeader.vue";
-  import Widget from "~/shared/ui/Widget.vue";
+  import BaseWidget from "../shared/ui/BaseWidget.vue";
   import {
     formatCurrency,
     formatTransactionDate,
