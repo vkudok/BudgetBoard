@@ -3,6 +3,7 @@ import type {
   TotalBalance,
   Transaction,
   TransactionCreate,
+  TransactionType,
 } from "~/features/transactions/models/transactions.model";
 
 export function useTransactionService() {
@@ -59,7 +60,7 @@ export function useTransactionService() {
     });
   }
 
-  async function getSummaryCategories(type: "income" | "expense") {
+  async function getSummaryCategories(type: TransactionType) {
     return await $fetch<SummaryCategories>(
       `${apiUrl}/transactions/categories/summary?type=${type}`,
       {

@@ -2,7 +2,7 @@
   <div class="h-full flex flex-col gap-4">
     <div class="flex justify-between">
       <PageInfoHeader name="Dashboard" />
-      <TransactionDialog @on-closed="onLoadData()" />
+      <TransactionDialog @on-closed="refreshAll()" />
     </div>
     <div class="flex gap-4">
       <Widget
@@ -20,17 +20,17 @@
       <Widget
         class="flex-1"
         title="Total income"
-        :value="`${formatCurrency(totalIncomeBalance.total)}₽`"
+        :value="`${formatCurrency(incomeTotalBalance.total)}₽`"
         type="income"
-        :change-percentage="totalIncomeBalance.changePercent"
+        :change-percentage="incomeTotalBalance.changePercent"
         description="this month"
       />
       <Widget
         class="flex-1"
         title="Total expenses"
-        :value="`${formatCurrency(totalExpenseBalance.total)}₽`"
+        :value="`${formatCurrency(expenseTotalBalance.total)}₽`"
         type="expense"
-        :change-percentage="totalExpenseBalance.changePercent"
+        :change-percentage="expenseTotalBalance.changePercent"
         description="this month"
       />
       <Widget
@@ -47,7 +47,11 @@
         class="flex-1 self-stretch"
         title="Recent categories"
       >
-        <AppGrid :data="data" :columns="indexColumns" :is-loading="isLoading" />
+        <AppGrid
+          :data="transactionsList"
+          :columns="indexColumns"
+          :is-loading="isLoading.value"
+        />
       </DynamicContentWidget>
       <DynamicContentWidget
         v-if="!!summaryCategoriesExpense?.items.length"
@@ -64,45 +68,40 @@
   import TransactionDialog from "../components/app/TransactionDialog.vue";
   import PageInfoHeader from "../components/app/PageInfoHeader.vue";
   import Widget from "~/components/app/Widget.vue";
-  import { useTransactionService } from "~/features/transactions/services/transactions.service";
   import {
     formatCurrency,
     formatTransactionDate,
-    type SummaryCategories,
-    type TotalBalance,
-    type Transaction,
   } from "~/features/transactions/models/transactions.model";
   import DiagramWidget from "~/components/app/DiagramWidget.vue";
   import type { DiagramWidgetConfig } from "~/components/features/models/diagramWidget.model";
   import DynamicContentWidget from "~/components/app/DynamicContentWidget.vue";
   import AppGrid from "~/components/app/AppGrid.vue";
   import { indexColumns } from "~/features/index/models/index.model";
+  import { useTransactions } from "~/features/transactions/composables/useTransactions";
+  import { useTotal } from "~/features/transactions/composables/useTotal";
+  import { useSummaryCategories } from "~/features/transactions/composables/useSummaryCategories";
 
-  const transactionService = useTransactionService();
-  const totalBalance = ref<TotalBalance>({
-    total: 0,
-    changePercent: 0,
-  });
-  const totalExpenseBalance = ref<TotalBalance>({
-    total: 0,
-    changePercent: 0,
-  });
-  const totalIncomeBalance = ref<TotalBalance>({
-    total: 0,
-    changePercent: 0,
-  });
-  const totalCount = ref<TotalBalance>({
-    total: 0,
-    changePercent: 0,
-  });
-  const summaryCategoriesExpense = ref<SummaryCategories | null>(null);
-  const data = ref<Transaction[]>([]);
-  const isLoading = ref(false);
+  const totalData = useTotal();
+  const transactionData = useTransactions();
+  const summaryCategoriesData = useSummaryCategories("expense");
+
+  const summaryCategoriesExpense = summaryCategoriesData.summary;
+  const totalBalance = totalData.totalBalance;
+  const expenseTotalBalance = totalData.expenseTotalBalance;
+  const incomeTotalBalance = totalData.incomeTotalBalance;
+  const totalCount = totalData.getTotalCount;
+  const transactionsList = transactionData.data.transactionsList;
+  const isLoading = computed(
+    () =>
+      totalData.loading ||
+      transactionData.loading ||
+      summaryCategoriesData.loading,
+  );
 
   const balanceChartItems = computed(() => {
     let balance = 0;
 
-    return [...data.value]
+    return [...transactionsList.value]
       .sort((currentTransaction, nextTransaction) => {
         return (
           new Date(currentTransaction.date).getTime() -
@@ -200,27 +199,12 @@
       summaryCategoriesExpense.value?.items.map((item) => item.amount) ?? [],
   }));
 
-  onMounted(async () => {
-    await onLoadData();
-  });
-
-  async function onLoadData() {
-    isLoading.value = true;
-    try {
-      totalBalance.value = await transactionService.summary.getTotalBalance();
-      totalExpenseBalance.value =
-        await transactionService.summary.getExpenseTotalBalance();
-      totalIncomeBalance.value =
-        await transactionService.summary.getIncomeTotalBalance();
-      totalCount.value = await transactionService.summary.getTotalCount();
-      summaryCategoriesExpense.value =
-        await transactionService.categories.getSummaryCategories("expense");
-      data.value = await transactionService.transactions.getTransactions();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      isLoading.value = false;
-    }
+  async function refreshAll() {
+    await Promise.all([
+      totalData.refresh(),
+      transactionData.refresh(),
+      summaryCategoriesData.refresh(),
+    ]);
   }
 </script>
 
