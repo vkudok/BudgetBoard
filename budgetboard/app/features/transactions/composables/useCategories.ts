@@ -1,4 +1,4 @@
-import { useTransactionService } from "~/features/transactions/services/transactions.service";
+import { useTransactionService } from "~/features/transactions/api/transactions.service";
 export function useCategories() {
   const service = useTransactionService();
 

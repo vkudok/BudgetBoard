@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
   import ApexChart from "vue3-apexcharts";
-  import type { DiagramWidgetConfig } from "~/components/features/models/diagramWidget.model";
+  import type { DiagramWidgetConfig } from "~/shared/models/diagramWidget.model";
 
   const props = defineProps<{
     chart: DiagramWidgetConfig;

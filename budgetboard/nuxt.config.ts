@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     ],
     css: ['~/assets/css/main.css'],
     devtools: {enabled: true},
+    components: [
+        { path: '~/shared/ui', pathPrefix: false }
+    ],
     runtimeConfig: {
         public: {
             apiUrl: 'http://127.0.0.1:8000'

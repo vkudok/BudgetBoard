@@ -13,8 +13,8 @@
 
 <script setup lang="ts">
   //TODO вернуть бургер
-  // import AppBurgerButton from '../components/app/AppBurgerButton.vue';
-  import AppSidebar from "../components/app/AppSidebar.vue";
+  // import AppBurgerButton from '~/shared/ui/AppBurgerButton.vue';
+  import AppSidebar from "~/shared/ui/AppSidebar.vue";
 
   // const isOpen = ref(false)
 </script>
