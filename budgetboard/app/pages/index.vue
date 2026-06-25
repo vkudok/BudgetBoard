@@ -5,7 +5,7 @@
       <TransactionDialog @on-closed="refreshAll()" />
     </div>
     <div class="flex gap-4">
-      <Widget
+      <BaseWidget
         class="flex-1"
         title="Total balance"
         :value="`${formatCurrency(totalBalance.total)}₽`"
@@ -16,8 +16,8 @@
         <div class="mb-5">
           <DiagramWidget :chart="dataForChart" />
         </div>
-      </Widget>
-      <Widget
+      </BaseWidget>
+      <BaseWidget
         class="flex-1"
         title="Total income"
         :value="`${formatCurrency(incomeTotalBalance.total)}₽`"
@@ -25,7 +25,7 @@
         :change-percentage="incomeTotalBalance.changePercent"
         description="this month"
       />
-      <Widget
+      <BaseWidget
         class="flex-1"
         title="Total expenses"
         :value="`${formatCurrency(expenseTotalBalance.total)}₽`"
@@ -33,7 +33,7 @@
         :change-percentage="expenseTotalBalance.changePercent"
         description="this month"
       />
-      <Widget
+      <BaseWidget
         class="flex-1"
         title="Transactions count"
         :value="`${totalCount.total}`"
@@ -65,17 +65,17 @@
 </template>
 
 <script setup lang="ts">
-  import TransactionDialog from "../components/app/TransactionDialog.vue";
-  import PageInfoHeader from "../components/app/PageInfoHeader.vue";
-  import Widget from "~/components/app/Widget.vue";
+  import TransactionDialog from "~/features/transactions/ui/TransactionDialog.vue";
+  import PageInfoHeader from "~/shared/ui/PageInfoHeader.vue";
+  import BaseWidget from "../shared/ui/BaseWidget.vue";
   import {
     formatCurrency,
     formatTransactionDate,
   } from "~/features/transactions/models/transactions.model";
-  import DiagramWidget from "~/components/app/DiagramWidget.vue";
-  import type { DiagramWidgetConfig } from "~/components/features/models/diagramWidget.model";
-  import DynamicContentWidget from "~/components/app/DynamicContentWidget.vue";
-  import AppGrid from "~/components/app/AppGrid.vue";
+  import DiagramWidget from "~/shared/ui/DiagramWidget.vue";
+  import type { DiagramWidgetConfig } from "~/shared/models/diagramWidget.model";
+  import DynamicContentWidget from "~/shared/ui/DynamicContentWidget.vue";
+  import AppGrid from "~/shared/ui/AppGrid.vue";
   import { indexColumns } from "~/features/index/models/index.model";
   import { useTransactions } from "~/features/transactions/composables/useTransactions";
   import { useTotal } from "~/features/transactions/composables/useTotal";

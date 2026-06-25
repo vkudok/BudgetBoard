@@ -1,5 +1,5 @@
 import type { TableColumn } from "@nuxt/ui";
-import { getGridHeader } from "~/components/features/models/appGrid.model";
+import { getGridHeader } from "~/shared/models/appGrid.model";
 import {
   formatTransactionDate, getFormattedAmount,
   type Transaction,

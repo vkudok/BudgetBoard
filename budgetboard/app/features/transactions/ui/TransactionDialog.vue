@@ -113,8 +113,8 @@
 
 <script setup lang="ts">
   import type { FormError, FormSubmitEvent } from "@nuxt/ui";
-  import PageInfoHeader from "./PageInfoHeader.vue";
-  import { useTransactionService } from "~/features/transactions/services/transactions.service";
+  import PageInfoHeader from "~/shared/ui/PageInfoHeader.vue";
+  import { useTransactionService } from "~/features/transactions/api/transactions.service";
   import type {
     Transaction,
     TransactionCreate,

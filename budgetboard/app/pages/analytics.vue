@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-  import PageInfoHeader from "../components/app/PageInfoHeader.vue";
+  import PageInfoHeader from "~/shared/ui/PageInfoHeader.vue";
 </script>

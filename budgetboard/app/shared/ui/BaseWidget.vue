@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-  import DynamicContentWidget from "~/components/app/DynamicContentWidget.vue";
+  import DynamicContentWidget from "~/shared/ui/DynamicContentWidget.vue";
 
   const props = defineProps<{
     title: string;

@@ -2,10 +2,7 @@
   <div class="h-full flex flex-col">
     <div class="flex justify-between">
       <PageInfoHeader name="Transaction List" />
-      <TransactionDialog
-        :data-to-edit="dataToEdit"
-        @on-closed="loadTransactions"
-      />
+      <TransactionDialog :data-to-edit="dataToEdit" @on-closed="refreshAll" />
     </div>
     <AppGrid
       class="flex-1"
@@ -26,10 +23,10 @@
 </template>
 
 <script setup lang="ts">
-  import TransactionDialog from "../components/app/TransactionDialog.vue";
-  import PageInfoHeader from "../components/app/PageInfoHeader.vue";
-  import AppGrid from "~/components/app/AppGrid.vue";
-  import { useTransactionService } from "~/features/transactions/services/transactions.service";
+  import TransactionDialog from "~/features/transactions/ui/TransactionDialog.vue";
+  import PageInfoHeader from "~/shared/ui/PageInfoHeader.vue";
+  import AppGrid from "~/shared/ui/AppGrid.vue";
+  import { useTransactionService } from "~/features/transactions/api/transactions.service";
   import {
     type Transaction,
     transactionColumns,
@@ -38,10 +35,12 @@
   import {
     actionButtons,
     type AppGridItems,
-  } from "~/components/features/models/appGrid.model";
-  import ConfirmDialog from "~/components/app/ConfirmDialog.vue";
+  } from "~/shared/models/appGrid.model";
+  import ConfirmDialog from "~/shared/ui/ConfirmDialog.vue";
+  import { useTransactions } from "~/features/transactions/composables/useTransactions";
 
-  const data = ref<Transaction[]>([]);
+  const transactionsData = useTransactions();
+  const data = transactionsData.data.transactionsList;
   const dataToEdit = ref<Transaction | null>(null);
   const columns = [...transactionColumns, actionButtons(getRowItems)];
   const transactionService = useTransactionService();
@@ -49,22 +48,11 @@
   const openDeleteDialog = ref(false);
   const deleteRow = ref<Row<Transaction> | null>(null);
 
-  onMounted(async () => {
-    await loadTransactions();
-  });
-
-  async function loadTransactions() {
-    isLoading.value = true;
+  async function refreshAll() {
     if (dataToEdit.value !== null) {
       dataToEdit.value = null;
     }
-    try {
-      data.value = await transactionService.transactions.getTransactions();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      isLoading.value = false;
-    }
+    return await transactionsData.refresh();
   }
 
   async function confirmDelete(state: boolean) {
@@ -73,7 +61,7 @@
       await transactionService.transactions.deleteTransaction(
         deleteRow.value.original.id,
       );
-      await loadTransactions();
+      await refreshAll();
       deleteRow.value = null;
     }
   }
