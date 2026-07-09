@@ -1,11 +1,40 @@
 import { UButton, UDropdownMenu } from "#components";
-import type { Column, Row } from "@tanstack/vue-table";
+import type { Column, Row, TableMeta } from "@tanstack/vue-table";
 import type { TableColumn } from "@nuxt/ui";
 
 export interface AppGridItems {
   label: string;
   icon?: string;
   onSelect: () => void;
+}
+
+export type FilterType = "select" | "text" | "number" | "date";
+
+export interface FilterOption {
+  label: string;
+  value: string | number | boolean;
+}
+
+export interface FilterConfig<T extends object> {
+  key: keyof T;
+  label: string;
+  type: FilterType;
+  defaultValue: T[keyof T];
+  options?: FilterOption[];
+  placeholder?: string;
+}
+
+export interface GridConfig<T, K extends object = Record<string, never>> {
+  data: T[];
+  columns: TableColumn<T>[];
+  isLoading: boolean;
+  columnVisibility?: Record<string, boolean>;
+  meta?: TableMeta<T>;
+  globalFilterInfo?: {
+    needSearch?: boolean;
+    filters: FilterConfig<K>[];
+    values: K;
+  };
 }
 
 export const actionButtons = <T>(

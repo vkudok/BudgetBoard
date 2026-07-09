@@ -51,6 +51,10 @@
           :data="transactionsList"
           :columns="indexColumns"
           :is-loading="isLoading.value"
+          :global-filter-info="{
+            filters: transactionFilters,
+            values: filterValuesConfig,
+          }"
         />
       </DynamicContentWidget>
       <DynamicContentWidget
@@ -69,8 +73,10 @@
   import PageInfoHeader from "~/shared/ui/PageInfoHeader.vue";
   import BaseWidget from "../shared/ui/BaseWidget.vue";
   import {
+    filterValuesConfig,
     formatCurrency,
     formatTransactionDate,
+    transactionFiltersConfig,
   } from "~/features/transactions/models/transactions.model";
   import DiagramWidget from "~/shared/ui/DiagramWidget.vue";
   import type { DiagramWidgetConfig } from "~/shared/models/diagramWidget.model";
@@ -80,6 +86,7 @@
   import { useTransactions } from "~/features/transactions/composables/useTransactions";
   import { useTotal } from "~/features/transactions/composables/useTotal";
   import { useSummaryCategories } from "~/features/transactions/composables/useSummaryCategories";
+  import { useCategories } from "~/features/transactions/composables/useCategories";
 
   const totalData = useTotal();
   const transactionData = useTransactions();
@@ -97,6 +104,25 @@
       transactionData.loading ||
       summaryCategoriesData.loading,
   );
+  const categoriesData = useCategories();
+  const transactionFilters = computed(() => {
+    const categoryOptions =
+      categoriesData.categories.value?.map((category) => ({
+        label: category,
+        value: category,
+      })) ?? [];
+
+    return transactionFiltersConfig.map((filter) => {
+      if (filter.key !== "category") {
+        return filter;
+      }
+
+      return {
+        ...filter,
+        options: [...(filter.options ?? []), ...categoryOptions],
+      };
+    });
+  });
 
   const balanceChartItems = computed(() => {
     let balance = 0;

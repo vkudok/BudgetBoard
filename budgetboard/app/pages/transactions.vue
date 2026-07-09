@@ -9,7 +9,11 @@
       :data="data"
       :columns="columns"
       :is-loading="isLoading"
-      :need-global-filter="true"
+      :global-filter-info="{
+        needSearch: true,
+        filters: transactionFilters,
+        values: filterValuesConfig,
+      }"
     />
     <ConfirmDialog
       :open="openDeleteDialog"
@@ -26,10 +30,11 @@
   import TransactionDialog from "~/features/transactions/ui/TransactionDialog.vue";
   import PageInfoHeader from "~/shared/ui/PageInfoHeader.vue";
   import AppGrid from "~/shared/ui/AppGrid.vue";
-  import { useTransactionService } from "~/features/transactions/api/transactions.service";
   import {
+    filterValuesConfig,
     type Transaction,
     transactionColumns,
+    transactionFiltersConfig,
   } from "~/features/transactions/models/transactions.model";
   import type { Row } from "@tanstack/vue-table";
   import {
@@ -38,12 +43,31 @@
   } from "~/shared/models/appGrid.model";
   import ConfirmDialog from "~/shared/ui/ConfirmDialog.vue";
   import { useTransactions } from "~/features/transactions/composables/useTransactions";
+  import { useCategories } from "~/features/transactions/composables/useCategories";
 
   const transactionsData = useTransactions();
+  const categoriesData = useCategories();
+  const transactionFilters = computed(() => {
+    const categoryOptions =
+      categoriesData.categories.value?.map((category) => ({
+        label: category,
+        value: category,
+      })) ?? [];
+
+    return transactionFiltersConfig.map((filter) => {
+      if (filter.key !== "category") {
+        return filter;
+      }
+
+      return {
+        ...filter,
+        options: [...(filter.options ?? []), ...categoryOptions],
+      };
+    });
+  });
   const data = transactionsData.data.transactionsList;
   const dataToEdit = ref<Transaction | null>(null);
   const columns = [...transactionColumns, actionButtons(getRowItems)];
-  const transactionService = useTransactionService();
   const isLoading = ref(false);
   const openDeleteDialog = ref(false);
   const deleteRow = ref<Row<Transaction> | null>(null);
@@ -58,9 +82,7 @@
   async function confirmDelete(state: boolean) {
     openDeleteDialog.value = false;
     if (state && deleteRow.value) {
-      await transactionService.transactions.deleteTransaction(
-        deleteRow.value.original.id,
-      );
+      await transactionsData.data.remove(deleteRow.value.original.id);
       await refreshAll();
       deleteRow.value = null;
     }

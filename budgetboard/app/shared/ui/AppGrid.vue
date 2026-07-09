@@ -1,16 +1,24 @@
 <template>
   <div class="flex h-full min-h-0 min-w-0 flex-col overflow-hidden">
-    <div v-if="needGlobalFilter" class="flex shrink-0 pt-4">
+    <div
+      v-if="props.globalFilterInfo?.filters.length"
+      class="flex items-end gap-3 pt-4"
+    >
       <UInput
+        v-if="props.globalFilterInfo.needSearch"
         v-model="globalFilter"
         :ui="{ base: 'h-12 text-base' }"
-        class="max-w-sm"
         placeholder="Search..."
       >
         <template #leading>
           <UIcon name="i-lucide-search" />
         </template>
       </UInput>
+      <TransactionFilters
+        :filters="props.globalFilterInfo.filters"
+        :values="filterValues"
+        @update-filter-value="updateFilterValue"
+      />
     </div>
     <UTable
       v-model:global-filter="globalFilter"
@@ -18,7 +26,7 @@
       :loading="isLoading"
       loading-color="secondary"
       loading-animation="carousel"
-      :data="data"
+      :data="filteredData"
       :columns="columns"
       :column-visibility="columnVisibility"
       :meta="meta"
@@ -32,19 +40,56 @@
   </div>
 </template>
 
-<script setup lang="ts" generic="T">
-  import type { TableColumn } from "@nuxt/ui";
-  import type { TableMeta } from "@tanstack/vue-table";
+<script setup lang="ts" generic="T, K extends object = Record<string, never>">
+  import TransactionFilters from "~/shared/ui/TransactionFilters.vue";
+  import type { GridConfig } from "~/shared/models/appGrid.model";
 
-  defineProps<{
-    data: T[];
-    columns: TableColumn<T>[];
-    isLoading: boolean;
-    columnVisibility?: Record<string, boolean>;
-    meta?: TableMeta<T>;
-    needGlobalFilter?: boolean;
-  }>();
+  const props = defineProps<GridConfig<T, K>>();
   const globalFilter = ref("");
+
+  const filterValues = reactive<Record<string, K[keyof K] | undefined>>({});
+
+  const filteredData = computed(() => {
+    if (!props.globalFilterInfo?.filters.length) {
+      return props.data;
+    }
+
+    return props.data.filter((row) => {
+      return props.globalFilterInfo?.filters.every((filter) => {
+        const key = String(filter.key);
+        const filterValue = filterValues[key];
+
+        if (
+          filterValue === "" ||
+          filterValue === undefined ||
+          filterValue === null ||
+          filterValue === filter.defaultValue
+        ) {
+          return true;
+        }
+
+        const rowValue = row[key as keyof typeof row];
+
+        return String(rowValue)
+          .toLowerCase()
+          .includes(String(filterValue).toLowerCase());
+      });
+    });
+  });
+
+  watchEffect(() => {
+    props.globalFilterInfo?.filters.forEach((filter) => {
+      const key = String(filter.key);
+
+      if (!(key in filterValues)) {
+        filterValues[key] = filter.defaultValue;
+      }
+    });
+  });
+
+  function updateFilterValue(key: keyof K, value: K[keyof K]) {
+    filterValues[String(key)] = value;
+  }
 </script>
 
 <style scoped>

@@ -1,14 +1,58 @@
 import type { TableColumn } from "@nuxt/ui";
-import { getGridHeader } from "~/shared/models/appGrid.model";
+import {
+  type FilterConfig,
+  getGridHeader,
+} from "~/shared/models/appGrid.model";
 import type { Row } from "@tanstack/vue-table";
 
 export interface TransactionCreate {
-  type: TransactionType;
+  type: TransactionType | "All";
   amount: number;
   category: string;
   date: string;
   comment?: string;
 }
+
+export const filterValuesConfig = reactive<TransactionCreate>({
+  type: "All",
+  amount: 0,
+  category: "-",
+  comment: "",
+  date: "",
+});
+
+export const transactionFiltersConfig: FilterConfig<TransactionCreate>[] = [
+  {
+    key: "type",
+    label: "Type",
+    type: "select",
+    defaultValue: "All",
+    options: [
+      { label: "All", value: "All" },
+      { label: "Income", value: "income" },
+      { label: "Expense", value: "expense" },
+    ],
+  },
+  {
+    key: "amount",
+    label: "Amount",
+    type: "number",
+    defaultValue: 0,
+  },
+  {
+    key: "category",
+    label: "Category",
+    type: "select",
+    defaultValue: "-",
+    options: [{ label: "All", value: "-" }],
+  },
+  {
+    key: "date",
+    label: "Date",
+    type: "date",
+    defaultValue: "",
+  },
+];
 
 export interface Transaction extends TransactionCreate {
   id: string;
